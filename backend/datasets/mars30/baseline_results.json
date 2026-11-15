@@ -1,0 +1,54 @@
+{
+  "sans": {
+    "logistic": {
+      "test_auroc": 0.814,
+      "test_avg_precision": 0.743,
+      "false_alarm_astronaut_rate": 0.038,
+      "detected": "16/19",
+      "median_delay_days": 13.0,
+      "mean_delay_days": 12.88
+    },
+    "grad_boost": {
+      "test_auroc": 0.863,
+      "test_avg_precision": 0.782,
+      "false_alarm_astronaut_rate": 0.038,
+      "detected": "16/19",
+      "median_delay_days": 11.0,
+      "mean_delay_days": 11.19
+    },
+    "hand_rule": {
+      "test_auroc": 0.809,
+      "test_avg_precision": 0.726,
+      "false_alarm_astronaut_rate": 0.077,
+      "detected": "15/19",
+      "median_delay_days": 13.0,
+      "mean_delay_days": 12.13
+    }
+  },
+  "venous": {
+    "logistic": {
+      "test_auroc": 0.931,
+      "test_avg_precision": 0.917,
+      "false_alarm_astronaut_rate": 0.05,
+      "detected": "25/25",
+      "median_delay_days": 5.0,
+      "mean_delay_days": 4.16
+    },
+    "grad_boost": {
+      "test_auroc": 0.928,
+      "test_avg_precision": 0.91,
+      "false_alarm_astronaut_rate": 0.1,
+      "detected": "25/25",
+      "median_delay_days": 6.0,
+      "mean_delay_days": 4.2
+    },
+    "hand_rule": {
+      "test_auroc": 0.898,
+      "test_avg_precision": 0.846,
+      "false_alarm_astronaut_rate": 0.0,
+      "detected": "25/25",
+      "median_delay_days": 6.0,
+      "mean_delay_days": 4.2
+    }
+  }
+}

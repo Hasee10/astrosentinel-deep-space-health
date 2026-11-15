@@ -1,0 +1,24 @@
+{
+  "seed": 2026,
+  "n_astronauts": 300,
+  "days": 30,
+  "onset_min": 5,
+  "onset_max": 20,
+  "sans_slope_mm_per_day": 0.04,
+  "onsd_noise_sd": 0.2,
+  "onsd_failure_rate": 0.1,
+  "off_axis_bias_mm": 0.4,
+  "venous_event_rate": 0.5454545454545454,
+  "area_baseline": 12.0,
+  "area_peak": 34.0,
+  "area_ramp_days": 5.0,
+  "area_noise_frac": 0.1,
+  "jugular_days": [
+    4,
+    11,
+    18,
+    25
+  ],
+  "flow_misread_rate": 0.0,
+  "label": "SYNTHETIC - NOT CLINICALLY VALIDATED"
+}
