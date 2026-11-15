@@ -1,6 +1,6 @@
 <div align="center">
   <h1>AstroSentinel</h1>
-  <img src="docs/readme/mission-banner.gif" width="100%" alt="AstroSentinel — Beyond Earth. Ahead of risk. Animated deep-space mission banner." />
+  <img src="docs/readme/mission-banner.gif" width="100%" alt="AstroSentinel — Beyond Earth. Ahead of risk. Animated pixel-art astronaut, typing mission terminal, moving cursor, and independent SANS and venous signal panels." />
   <p><strong>The next frontier is human.</strong></p>
   <p>Crew-health evidence, ultrasound monitoring, and a delayed view from Earth.</p>
   <p><a href="https://astrosentinel-deep-space-health.vercel.app"><strong>Launch mission control ↗</strong></a> · <a href="#explore-the-platform">Explore the platform</a> · <a href="#research-results">Research results</a> · <a href="#quick-start">Run locally</a></p>
@@ -17,6 +17,10 @@ Far from Earth, the body changes while the ground team waits for a signal. Astro
 
 The platform brings together **SANS** (Spaceflight-Associated Neuro-ocular Syndrome) and **venous-stasis monitoring**, personal baselines, measurement quality, scan scheduling, and reproducible research.
 
+![Animated medical monitoring design: stylized eye and optic-nerve scan, measurement bracket, moving blood-flow particles, and pixel cursor. Illustrative anatomy only.](docs/readme/medical-signals.gif)
+
+*Two independent monitoring tracks: optic-nerve evidence for SANS, and jugular area / flow evidence for venous stasis. The anatomy animation is illustrative; it does not show a patient, measured waveform, or diagnostic result.*
+
 | 300 | 30 | 9,000 | 2 |
 | :---: | :---: | :---: | :---: |
 | Synthetic astronauts | Mission days | Astronaut-day records | Independent outcomes |
@@ -24,10 +28,10 @@ The platform brings together **SANS** (Spaceflight-Associated Neuro-ocular Syndr
 ## Explore the platform
 
 <a href="https://astrosentinel-deep-space-health.vercel.app">
-  <img src="docs/readme/platform-tour.gif" width="100%" alt="Animated walkthrough with fade transitions: landing page, research cohort, labeled engineering assessments, ONSD timeline, Earth snapshot, simulated consultation, and engineering comparison." />
+  <img src="docs/readme/platform-tour.gif" width="100%" alt="Animated walkthrough with a moving pixel cursor and pixel-block wipe transitions: landing page, research cohort, labeled engineering assessments, ONSD timeline, Earth snapshot, simulated consultation, and engineering comparison." />
 </a>
 
-*Actual application captures, connected with fade transitions. The 300-profile research cohort, E1–E5 engineering acceptance cases, and aggregate engineering comparison are separate datasets; their labels remain visible.*
+*Actual application captures with animated cursor highlights and pixel-block transitions. Cursor movement is an illustrative overlay, not a live browser session. The 300-profile research cohort, E1–E5 engineering acceptance cases, and aggregate engineering comparison are separate datasets; their labels remain visible.*
 
 | Onboard evidence | Across the mission | Back on Earth |
 | :--- | :--- | :--- |
@@ -184,7 +188,7 @@ Dependency versions are recorded in [frontend/package.json](frontend/package.jso
 
 The tag [`v1.0.0-final-submission`](https://github.com/Hasee10/astrosentinel-deep-space-health/tree/v1.0.0-final-submission) preserves the submission snapshot. Later README and repository-maintenance commits may appear after that tag; individual files retain their own development history.
 
-README animations are self-contained GIFs with no external animation service. Their source captures are included in `docs/readme/screens/`. To rebuild them, install Pillow and run `python docs/readme/generate_assets.py` from the repository root.
+README animations are self-contained GIFs: a typing terminal with a floating pixel astronaut, medical anatomy and flow motion, and a cursor-guided screenshot tour with pixel-block wipes. No external animation service is required. Their source captures are included in `docs/readme/screens/`. To rebuild them, install Pillow and run `python docs/readme/generate_assets.py` from the repository root.
 
 </details>
 
