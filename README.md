@@ -1,185 +1,198 @@
 <div align="center">
-
-# ASTROSENTINEL
-
-**Beyond Earth. Ahead of risk.**
-
-Synthetic deep-space astronaut health monitoring research platform — SANS and venous-stasis surveillance, fixed-vs-adaptive ultrasound scheduling, and delayed Earth communication, built around a 300-astronaut / 30-day synthetic cohort.
-
-**Research prototype. Not clinically validated. No real medical diagnosis.**
-
-[Live demo](https://astrosentinel-deep-space-health.vercel.app) · [Research results](docs/research/results/RESULTS_FOR_SLIDES.md) · [Reproduce the study](#quick-start) · [Final submission](#final-submission)
-
+  <h1>AstroSentinel</h1>
+  <img src="docs/readme/mission-banner.gif" width="100%" alt="AstroSentinel — Beyond Earth. Ahead of risk. Animated deep-space mission banner." />
+  <p><strong>The next frontier is human.</strong></p>
+  <p>Crew-health evidence, ultrasound monitoring, and a delayed view from Earth.</p>
+  <p><a href="https://astrosentinel-deep-space-health.vercel.app"><strong>Launch mission control ↗</strong></a> · <a href="#explore-the-platform">Explore the platform</a> · <a href="#research-results">Research results</a> · <a href="#quick-start">Run locally</a></p>
+  <p><code>REACT</code> &nbsp; <code>PYTHON</code> &nbsp; <code>SYNTHETIC RESEARCH</code> &nbsp; <code>NASA SPACE APPS 2026</code></p>
 </div>
+
+> **Research prototype · Synthetic data · Not clinically validated.** No real medical diagnosis or flight-readiness claim. Earth communications and medical consultations are simulated.
 
 ---
 
-## Screenshots
+## The mission
 
-| Mission overview | Research results |
-|---|---|
-| ![Mission overview](docs/screenshots/02-mission-overview.jpg) | ![Research results](docs/screenshots/03-research-results.jpg) |
+Far from Earth, the body changes while the ground team waits for a signal. AstroSentinel explores how astronauts could follow ultrasound evidence, understand independent monitoring outcomes, and share a clear snapshot across a simulated communication delay.
 
-| Landing | Earth Link |
-|---|---|
-| ![Landing](docs/screenshots/01-landing.jpg) | ![Earth Link](docs/screenshots/04-earth-link.jpg) |
+The platform brings together **SANS** (Spaceflight-Associated Neuro-ocular Syndrome) and **venous-stasis monitoring**, personal baselines, measurement quality, scan scheduling, and reproducible research.
 
-All four are real captures of the running application against the actual Mars30 dataset, not mockups.
+| 300 | 30 | 9,000 | 2 |
+| :---: | :---: | :---: | :---: |
+| Synthetic astronauts | Mission days | Astronaut-day records | Independent outcomes |
 
-## Project identity
+## Explore the platform
 
-AstroSentinel is a synthetic research platform exploring two deep-space crew-health questions: can optic-nerve-sheath-diameter (ONSD) ultrasound detect SANS (Spaceflight-Associated Neuro-ocular Syndrome) progression, and does scheduling extra scans adaptively (in response to a weak physiological trigger) outperform a fixed scanning interval, given that any finding has to travel back to Earth over a communication delay of 0–20 minutes one-way.
+<a href="https://astrosentinel-deep-space-health.vercel.app">
+  <img src="docs/readme/platform-tour.gif" width="100%" alt="Animated walkthrough with fade transitions: landing page, research cohort, labeled engineering assessments, ONSD timeline, Earth snapshot, simulated consultation, and engineering comparison." />
+</a>
 
-Every number this project produces is computed from a synthetic dataset (either its own generator or the collaborator-provided **Mars30** dataset: 300 astronauts × 30 days, seed 2026) and is explicitly labeled **"Simulation placeholder - unvalidated"** wherever it reaches the UI. Nothing here is a medical device, a diagnostic tool, or a clinically validated model.
+*Actual application captures, connected with fade transitions. The 300-profile research cohort, E1–E5 engineering acceptance cases, and aggregate engineering comparison are separate datasets; their labels remain visible.*
 
-## Mission at a glance
+| Onboard evidence | Across the mission | Back on Earth |
+| :--- | :--- | :--- |
+| **Independent assessments** — separate SANS and venous outcomes, with reasons and follow-up actions. | **Observation history** — ONSD and jugular traces, tier history, recorded changes, and scan records. | **Delayed snapshots** — see what the crew knows and what Earth has actually received. |
+| **Personal baselines** — inspect changes in ONSD, jugular area, and flow alongside acquisition quality. | **Playback and scheduling** — move through 30 mission days and inspect fixed, adaptive, and retry decisions where available. | **Simulated consultations** — follow a request, evidence packet, ground review, response, and audit trail. |
+| **Cohort browser** — search profiles and filter independent outcome statuses. | **Explainable tiers** — Monitor, Repeat, Consult, and Urgent, with unavailable estimates shown explicitly. | **Research workspace** — inspect results, engineering comparisons, model capabilities, blockers, and run provenance. |
 
-- **300** synthetic astronauts
-- **30** mission days each
-- **9,000** astronaut-day records
-- **2** independently-assessed outcomes: SANS and venous stasis (never a combined score)
-- **3** scan-schedule policies compared: fixed 3-day, fixed 7-day, fixed 14-day, each against an adaptive (fixed-backstop + triggered-extra-scan) counterpart
+**Start a guided exploration:** [Landing](https://astrosentinel-deep-space-health.vercel.app) → [Mission deck](https://astrosentinel-deep-space-health.vercel.app/#mission) → [Overview](https://astrosentinel-deep-space-health.vercel.app/#dashboard) → [Timeline](https://astrosentinel-deep-space-health.vercel.app/#timeline) → [Earth link](https://astrosentinel-deep-space-health.vercel.app/#ground) → [Research](https://astrosentinel-deep-space-health.vercel.app/#research).
 
-## The problem
+<details>
+<summary><strong>Open the still-image gallery</strong></summary>
 
-A Mars transit puts a 0–20 minute one-way communication delay between a crew and the flight surgeons who would normally read an ultrasound. SANS progression is slow and subtle (around +0.04 mm/day of ONSD growth against ~0.20 mm of day-to-day measurement noise), so a scan taken too late, or interpreted without the astronaut's own baseline, either misses an early warning or produces a flood of false alarms. Scanning more often costs crew time and hardware wear; scanning on a fixed schedule risks missing the window between scheduled scans. This project exists to measure that tradeoff with real numbers instead of guessing.
+| Mission overview · engineering example | Timeline · engineering example |
+| :---: | :---: |
+| ![Independent SANS and venous engineering assessments](docs/readme/screens/03-assessments.jpg) | ![ONSD observation history for engineering profile E4](docs/readme/screens/04-timeline.jpg) |
 
-## How the platform works
+| Earth snapshot · engineering example | Research results · Mars30 |
+| :---: | :---: |
+| ![Received Earth snapshot for engineering profile E4](docs/readme/screens/05-earth.jpg) | ![Computed Mars30 synthetic research results](docs/screenshots/03-research-results.jpg) |
 
+</details>
+
+## From observation to Earth
+
+```mermaid
+flowchart LR
+    A[Ultrasound observation] --> B[Quality and personal baseline]
+    B --> C[Independent SANS assessment]
+    B --> D[Independent venous assessment]
+    C --> E[Monitoring tier and follow-up]
+    D --> E
+    E --> F[Simulated delayed Earth link]
+    F --> G[Received snapshot and review]
 ```
-Synthetic physiological progression  →  Observable ultrasound evidence  →  Monitoring model
-        (generator / Mars30)              (ONSD mm, jugular area/flow)     (Bayesian LR, causal)
-                                                                                    │
-                                                                                    ▼
-                                                              Scan-schedule decision (fixed / adaptive)
-                                                                                    │
-                                                                                    ▼
-                                                                  Tier escalation (Monitor → Urgent)
-                                                                                    │
-                                                                                    ▼
-                                                        Simulated Earth communication (0–20 min delay)
-```
 
-## Core capabilities
-
-- Independent SANS and venous-stasis assessments — never a combined risk score
-- ONSD and jugular-vein ultrasound evidence, with explicit measurement-quality handling (ok / degraded / failed)
-- A Bayesian SANS probability rule tested against each astronaut's own causally-estimated baseline (not an absolute cutoff — see [Scientific assumptions](#scientific-assumptions-and-limitations))
-- Fixed-vs-adaptive scheduling comparison at 3/7/14-day intervals, with real detection-delay, missed-event, false-escalation, and scan-cost figures
-- Explainable monitoring tiers (Monitor / Repeat / Consult / Urgent) with a stated reason for every tier
-- Day-by-day playback across the full 30-day mission, per astronaut
-- A simulated Earth communication link with a configurable one-way delay
-- A reproducible research pipeline: every public number traces to a script in this repository
-
-## Actual application screenshots
-
-See [Screenshots](#screenshots) above — landing page, mission overview with live SANS/venous assessments, the Research Results panel (real computed figures), and the Earth Link round-trip.
+The monitoring views use published observations and assessments. Scan decisions and comparisons are computed offline; browser playback reveals the published mission history. Earth Link and consultation timing run locally in the browser.
 
 ## Research results
 
-See **[docs/research/results/RESULTS_FOR_SLIDES.md](docs/research/results/RESULTS_FOR_SLIDES.md)** for the full write-up, and the live app's **Research → Results** panel for the same figures rendered interactively. Highlights (all synthetic, all reproducible from this repo):
+The **Mars30 synthetic study** compares fixed SANS scan intervals against adaptive scanning with a fixed backstop and triggered extra scans. These are computed simulation results, not clinical performance measurements.
 
-| Interval | Fixed detected / 124 events | Adaptive detected / 124 events | Days saved per extra scan | False-escalation rate (fixed → adaptive) |
-|---|---|---|---|---|
-| 3-day | 93 | 98 | 0.97 | 18.2% → 18.8% |
-| 7-day | 91 | 101 | 0.88 | 8.5% → 10.2% |
-| 14-day | 60 | 84 | 0.94 | 1.1% → 6.8% |
+| Scan interval | Fixed detected / 124 events | Adaptive detected / 124 events | Days saved per extra scan | False-escalation rate: fixed → adaptive |
+| :--- | :---: | :---: | :---: | :---: |
+| 3 days | 93 | 98 | 0.97 | 18.2% → 18.8% |
+| 7 days | 91 | 101 | 0.88 | 8.5% → 10.2% |
+| 14 days | 60 | 84 | 0.94 | 1.1% → 6.8% |
 
-Adaptive scanning is a genuine trade-off, not an unconditional win: at every interval it detects more events and reduces delay, but also uses more scans and produces more false escalations — all four move together. See the full write-up for the complete reading, including why the Consult tier (40% posterior) is structurally unreachable under this single-reading model.
+**The trade-off:** adaptive scanning detects more synthetic events and reduces delay while using more scans and producing more false escalations. Evaluate all four together.
 
-An earlier version of this study used an absolute ONSD cutoff instead of a personal-baseline-relative rule and produced an unusable ~96-99% false-escalation rate. That run is preserved, clearly marked as superseded, at [`docs/research/results/AUDIT_superseded_absolute_cutoff_run/`](docs/research/results/AUDIT_superseded_absolute_cutoff_run/) — the corrected methodology and figures above are what should be cited.
+[Read the methodology and complete results →](docs/research/results/RESULTS_FOR_SLIDES.md) · [Inspect the computed comparison](docs/research/results/mars30_schedule_comparison.json) · [Open the published results data](frontend/public/data/research/results.json)
 
-## Technology stack
+<details>
+<summary><strong>Scientific assumptions, dataset boundaries, and limitations</strong></summary>
 
-**Backend** (`backend/`): Python, [pydantic](https://docs.pydantic.dev/) (data contracts), [pytest](https://pytest.org/) (316 tests), [pandas](https://pandas.pydata.org/) / [numpy](https://numpy.org/) (data handling), [scikit-learn](https://scikit-learn.org/) (ML baseline), [matplotlib](https://matplotlib.org/) (plots). See `backend/requirements.txt` for exact pinned ranges.
+- Every astronaut, observation, and event is synthetic. No clinical validation or real medical diagnosis is claimed.
+- The Mars30 dataset contains 300 astronauts across 30 days, with seed 2026. Train / validation / test splits contain 210 / 45 / 45 astronauts, with no astronaut shared between splits.
+- The corrected Mars30 SANS rule uses the latest quality-OK ONSD reading relative to the median of the first three quality-OK readings available in the astronaut’s visible history. A delta of at least 0.4 mm is positive.
+- The LR+ / LR− values (6.93 / 0.04) come from an absolute-cutoff ICU/ICP test. Reusing them for a baseline-relative SANS test is an explicit modeling assumption. The 5% starting prior is an unsourced simulation placeholder.
+- Under that single-reading SANS model, the posterior cannot reach the 40% Consult threshold. Engineering acceptance cases demonstrate additional states under a separate, explicitly labeled model.
+- SANS progression, onset timing, jugular-flow simplifications, and HRV-proxy trigger accuracy are simulation assumptions. The scheduling study uses an assumed trigger accuracy of 0.7; the documented sweep spans 0.5–0.9.
+- The Mars30 results, E1–E5 engineering cases, and aggregate engineering comparison have different purposes and must not be treated as interchangeable evidence.
+- Registry approvals record user-relayed authorization for the synthetic submission experiment, not independent written research-lead sign-off, peer review, or clinical approval.
+- An earlier absolute-cutoff study produced unusable false-escalation rates. Its superseded outputs remain in the [audit archive](docs/research/results/AUDIT_superseded_absolute_cutoff_run/).
 
-**Frontend** (`frontend/`): [React 19](https://react.dev/), [Vite](https://vite.dev/), [Recharts](https://recharts.org/) for charts, [Playwright](https://playwright.dev/) for e2e tests, [ESLint](https://eslint.org/). See `frontend/package.json` for exact versions.
+See the [assumption registry](backend/registry/data/assumptions.json) and [full study notes](docs/research/results/RESULTS_FOR_SLIDES.md) for provenance.
 
-## Architecture
-
-```
-backend/datasets/mars30/          Collaborator-provided synthetic dataset (CSV, seed 2026)
-backend/registry/                 Versioned scientific assumptions + parameters, each with an approval record
-backend/monitoring/engine.py      The one authoritative SANS/venous Bayesian assessment function
-backend/evaluation/               Fixed-vs-adaptive scheduling comparison, trigger-firing model
-backend/*_to_pipeline.py          Offline: dataset → scored assessments → sanitized public JSON/JSONL
-                                            │
-                                            ▼
-frontend/public/data/             Static, pre-computed, sanitized data (no hidden ground truth)
-                                            │
-                                            ▼
-frontend/src/                     Static React application reading that data — no backend server at runtime
-                                   Earth Link is a client-side simulated delay, not a real network link
-```
-
-The frontend never calls a live Python inference API — every number it shows was computed offline and published as a static file, then fetched by the browser. This is a design choice (reproducibility and zero backend-hosting cost), not a limitation of the model.
+</details>
 
 ## Quick start
 
-```bash
-git clone git@github.com:Hasee10/astrosentinel-deep-space-health.git
-cd astrosentinel-deep-space-health
-```
-
-**Frontend (the deployed app):**
+### Launch the frontend
 
 ```bash
-cd frontend
+git clone https://github.com/Hasee10/astrosentinel-deep-space-health.git
+cd astrosentinel-deep-space-health/frontend
 npm ci
-npm run dev        # http://localhost:5173
-npm run build      # production build -> dist/
+npm run dev
 ```
 
-**Backend (reproduce the research):**
+Open the local URL printed by Vite, usually **http://localhost:5173**. The frontend reads published static data; no Python server is required.
 
-> `backend/tests/test_source_documents_unchanged.py` (4 of the 316 tests) hashes three
-> primary source documents (`Mission_NASA_updated.docx`, `Mission_NASA(1).docx`, `vn.txt`)
-> that are **not included in this public repository** by explicit request. Those 4 tests
-> will fail on a fresh clone unless you place your own copies of those three files at the
-> repository root first; the other 312 tests are unaffected.
+```bash
+npm run build       # Production files in frontend/dist
+npm run check:data  # Check the public-data boundary before deployment
+```
+
+<details>
+<summary><strong>Reproduce the Python research pipeline</strong></summary>
+
+From the repository root:
 
 ```bash
 cd backend
-python -m venv .venv && . .venv/bin/activate   # or .venv\Scripts\activate on Windows
-pip install -r requirements.txt
-python -I -m pytest tests/ -q                           # 316 tests (312 without the 3 source documents above)
-python -I backend/datasets/mars30/validate_dataset.py backend/datasets/mars30   # dataset validator
-cd datasets/mars30 && python baseline_example.py && cd ../..   # ML baseline
-python -m evaluation.mars30_schedule_comparison          # fixed-vs-adaptive comparison
-python mars30_to_pipeline.py --output-dir outputs/mars30_pipeline   # rescoring
-python publish_research_results.py                       # refresh the Research Results panel's data
+python -m venv .venv
 ```
 
-**Public-data safety check (run before every deploy):**
+Activate the environment with `source .venv/bin/activate` on macOS / Linux or `.venv\Scripts\Activate.ps1` in PowerShell. Then, from `backend/`:
 
 ```bash
-cd frontend
-npm run check:data
+pip install -r requirements.txt
+python -I -m pytest tests/ -q
+python -I datasets/mars30/validate_dataset.py datasets/mars30
+python -m evaluation.mars30_schedule_comparison
+python mars30_to_pipeline.py --output-dir outputs/mars30_pipeline
 ```
 
-## Scientific assumptions and limitations
+To reproduce the ML baseline, run from `backend/datasets/mars30/`:
 
-- **Synthetic study.** Every astronaut, measurement, and event is generated, never a real person.
-- **Assumed SANS progression slope** (+0.04 mm/day) and onset timing are dataset design choices, documented as assumptions, not measured clinical rates.
-- **Simplified jugular flow model** (antegrade / stagnant / retrograde) stands in for a much richer real physiological signal.
-- **The SANS Bayesian rule** reuses Koziarz et al. 2019's real LR+/LR- figures (6.93 / 0.04), derived from an absolute-cutoff ICU/ICP study, applied here to a *different*, personal-baseline-relative test — an explicit reuse choice, not something that study itself measured. The 5% starting prior has no literature source.
-- **The adaptive trigger** is a weak-signal (HRV-proxy) simulation at an assumed accuracy (0.7, within an approved 0.5–0.9 sweep), not a measured sensor.
-- **No clinical validation. No real medical diagnosis.** Every probability in the UI is labeled "Simulation placeholder - unvalidated."
-- **Authorization scope:** the approvals behind this model are user-relayed for this synthetic submission experiment only — not independent written research-lead sign-off, peer review, or clinical approval. See `backend/registry/data/assumptions.json` and [RESULTS_FOR_SLIDES.md](docs/research/results/RESULTS_FOR_SLIDES.md) for the full audit trail.
+```bash
+python baseline_example.py
+```
 
-## Final submission
+After the baseline, comparison, and scoring outputs exist, run from `backend/`:
 
-This repository's final-submission work (Mars30 dataset integration, the corrected SANS Bayesian model, the fixed-vs-adaptive scheduling study, the Research Results panel, and this cleanup) was committed and tagged **`v1.0.0-final-submission`**. See that tag's GitHub Release for the exact commit SHA and UTC/PKT timestamps, and [docs/research/results/RESULTS_FOR_SLIDES.md](docs/research/results/RESULTS_FOR_SLIDES.md) for the figures it produced.
+```bash
+python publish_research_results.py
+```
 
-Only the files actually touched during this submission carry today's commit date on GitHub — most of `frontend/src/` and several `backend/` modules were written during earlier development (see their individual commit history) and correctly continue to show those original dates. A new tag does not, and should not, make every file in the repository appear freshly modified.
+The source-document hash checks **skip** when the privately retained primary documents are absent. To run those checks, provide the original `Mission_NASA_updated.docx`, `Mission_NASA(1).docx`, and `vn.txt` files at the repository root. These documents are intentionally excluded from the public repository.
 
-## Team and attribution
+</details>
 
-Project repository maintained by [Hasee10](https://github.com/Hasee10). No other contributors, affiliations, or awards are claimed.
+<details>
+<summary><strong>Architecture and technology</strong></summary>
 
-## Links
+| Layer | Responsibility | Technology |
+| :--- | :--- | :--- |
+| Research data | Synthetic cohort, observation generation, astronaut-level splits | Python, pandas, NumPy |
+| Monitoring | Independent assessments, quality handling, personal baselines | Python, Pydantic |
+| Evaluation | Scheduling comparisons and ML reference baselines | scikit-learn, pytest, Matplotlib |
+| Publication | Sanitized JSON / JSONL and reproducible aggregate reports | Offline Python scripts |
+| Mission workspace | Profiles, charts, playback, simulated Earth Link | React, Vite, Recharts |
+| Verification | Browser flows, presentation logic, public-data checks | Playwright, Node.js, ESLint |
 
-- [Live demo](https://astrosentinel-deep-space-health.vercel.app)
-- [Research results](docs/research/results/RESULTS_FOR_SLIDES.md)
-- [Reproduction instructions](#quick-start)
-- [GitHub repository](https://github.com/Hasee10/astrosentinel-deep-space-health)
+```text
+backend/datasets/mars30/     Synthetic source dataset
+backend/registry/           Assumptions and parameter provenance
+backend/monitoring/         Monitoring assessment engine
+backend/evaluation/         Scheduling and comparison code
+         │
+         ▼  offline publication
+frontend/public/data/       Sanitized observations and computed results
+         │
+         ▼  static fetch
+frontend/src/               Interactive mission workspace
+```
+
+Dependency versions are recorded in [frontend/package.json](frontend/package.json) and [backend/requirements.txt](backend/requirements.txt). The frontend does not call a live Python inference API. Its Earth Link is a client-side simulation.
+
+</details>
+
+<details>
+<summary><strong>Submission snapshot and visual assets</strong></summary>
+
+The tag [`v1.0.0-final-submission`](https://github.com/Hasee10/astrosentinel-deep-space-health/tree/v1.0.0-final-submission) preserves the submission snapshot. Later README and repository-maintenance commits may appear after that tag; individual files retain their own development history.
+
+README animations are self-contained GIFs with no external animation service. Their source captures are included in `docs/readme/screens/`. To rebuild them, install Pillow and run `python docs/readme/generate_assets.py` from the repository root.
+
+</details>
+
+---
+
+<div align="center">
+  <p><strong>Keep the human in the mission.</strong></p>
+  <p>Built by <strong>SHIFU HAWKS</strong> · Maintained by <a href="https://github.com/Hasee10">Hasee10</a></p>
+  <p><a href="https://astrosentinel-deep-space-health.vercel.app"><strong>Experience AstroSentinel ↗</strong></a> · <a href="docs/research/results/RESULTS_FOR_SLIDES.md">Explore the research</a> · <a href="https://github.com/Hasee10/astrosentinel-deep-space-health">Browse the code</a></p>
+  <sub>Synthetic research demonstration. Monitoring only. Not clinically or flight validated.</sub>
+</div>
