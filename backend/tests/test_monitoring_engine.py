@@ -122,13 +122,14 @@ def test_history_rejects_empty_list(registry):
 
 
 def test_unresolved_explanation_names_the_blocking_assumptions(registry):
-    """SANS stays blocked by name (sans_prior_mapping is approved for generation-
-    layer ground truth only, never a monitoring-layer formula - see
-    monitoring/engine.py's module docstring). Venous's model IS approved now, so
-    with no evidence at all its explanation names the real reason: no usable
-    flow-class observation, not a missing approval."""
+    """Both SANS and venous models are approved now (SANS per the 2026-11-15
+    final-submission directive, venous since 2026-11-04), so with no evidence at
+    all each explanation names the real reason: no usable observation yet, not a
+    missing approval."""
     result = assess_history([_obs(1)], registry)
-    assert "sans_prior_mapping" in str(result.sans.limitations)
+    assert result.sans.probability is None
+    assert "approved" in str(result.sans.limitations).lower()
+    assert "onsd" in str(result.sans.limitations).lower() or "evidence" in str(result.sans.limitations).lower()
     assert result.venous.probability is None
     assert "approved" in str(result.venous.limitations).lower()
     assert "flow-class" in str(result.venous.limitations).lower() or "evidence" in str(result.venous.limitations).lower()

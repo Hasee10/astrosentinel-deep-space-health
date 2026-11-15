@@ -22,10 +22,12 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 
 
 def test_score_crew_runs_end_to_end_on_generator_output(tmp_path):
-    """ASTROSENTINEL: ONSD generation is real now, so a 'repeat' tier legitimately
-    appears (quality-driven, from the approved ~10% scan-failure injection) - no
-    SANS tier ever reaches consult/urgent, since no SANS probability model exists.
-    Venous stays 100% unresolved: no jugular data is generated at all."""
+    """ASTROSENTINEL: ONSD generation is real, so a 'repeat' tier legitimately
+    appears both from the approved ~10% scan-failure injection AND now (since the
+    2026-11-15 final-submission directive approved sans_probability_model) from a
+    genuine below-40%-posterior Bayesian read; 'monitor' appears whenever the
+    latest ok-quality ONSD reads below the 5.0mm cutoff (LR- 0.04). Venous stays
+    100% unresolved: no jugular data is generated at all."""
     gen_paths = generate_crew(crew_size=8, seed=20, mission_duration_days=30, output_dir=tmp_path, run_id="run-score-test")
     out_paths = score_crew(gen_paths["crew_observations"], tmp_path)
     summary = json.loads(out_paths["summary"].read_text(encoding="utf-8"))
@@ -35,9 +37,10 @@ def test_score_crew_runs_end_to_end_on_generator_output(tmp_path):
     assert summary["structural_warnings"] == []  # every generated scan carries quality metadata
 
     sans_dist = summary["sans_tier_distribution"]
-    assert set(sans_dist) <= {"unresolved", "repeat"}
+    assert set(sans_dist) <= {"unresolved", "monitor", "repeat", "consult", "urgent"}
     assert sum(sans_dist.values()) == 240
     assert sans_dist.get("repeat", 0) > 0  # the approved failure rate must actually fire sometimes
+    assert sans_dist.get("monitor", 0) > 0  # below-cutoff ONSD readings must actually fire sometimes
 
     assert summary["venous_tier_distribution"] == {"unresolved": 240}
 

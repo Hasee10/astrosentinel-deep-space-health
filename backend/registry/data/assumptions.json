@@ -19,6 +19,34 @@
     "limitations": "Optic cup size and dural sinus asymmetry are named as inputs in the mission brief's prose but have no corresponding numeric entry anywhere in the Table 4 parameter sheet - this approval does not supply that mapping either; it approves a self-contained synthetic susceptibility/prior scheme instead, which Rahat provided directly (not derived from Table 4). The event-onset DAY and the physiological progression CURVE for astronauts whose has_sans_event is True remain explicitly unapproved and blocked (see registry/design_decisions.py)."
   },
   {
+    "assumption_id": "sans_probability_model",
+    "description": "Whether and how to produce any calibrated numeric probability for SANS, versus keeping SANS monitoring as a qualitative/insufficient-evidence state.",
+    "value_or_range": "Approved (final-submission directive, 2026-11-15): SANS monitoring may emit a numeric probability via a standard Bayesian prior-odds x likelihood-ratio model, using the latest-valid-ONSD likelihood ratios approved under onsd_cutoff_risk_mapping. The update uses ONLY the single latest quality-OK ONSD observation in a case's history per assessment - sequential daily likelihood ratios must NOT be multiplied together, for the same correlated-evidence reason venous_probability_model excludes it. Every output of this model must be labeled 'Simulation placeholder - unvalidated', not presented as a clinically validated risk estimate.",
+    "scientific_purpose": "Determines that the SANS Monitoring Engine may emit a probability field (via the approved LR model), rather than staying null forever, mirroring venous_probability_model's structure.",
+    "assumption_kind": "scope_decision",
+    "related_parameters": ["onsd_accuracy_koziarz_2019_rev1"],
+    "approval_status": "approved",
+    "approved_by": "Collaborator (final-submission directive, 2026-11-15)",
+    "limitations": "This activates onsd_icu_cutoff_reuse_scope's previously-open question: the 5.0mm cutoff is reused as a binary LR test threshold (not a standalone diagnosis). The dataset's own documentation notes ~90% of healthy astronauts sit above 5.0mm at personal baseline, so this absolute-cutoff rule will read as elevated-probability far more often than a personal-baseline-relative rule would - that tradeoff is accepted by this directive, not hidden; see RESULTS_FOR_SLIDES.md for its measured false-alarm behavior."
+  },
+  {
+    "assumption_id": "onsd_cutoff_risk_mapping",
+    "description": "The numeric likelihood ratios and prior used by the SANS Bayesian probability model.",
+    "value_or_range": {
+      "cutoff_mm": 5.0,
+      "lr_positive": 6.93,
+      "lr_negative": 0.04,
+      "starting_synthetic_prior_pct": 5,
+      "note": "cutoff_mm/lr_positive/lr_negative are onsd_accuracy_koziarz_2019_rev1 (Koziarz et al. 2019, revised transcription), reused for SANS per sans_probability_model/onsd_icu_cutoff_reuse_scope, not a SANS-specific validated study. starting_synthetic_prior_pct has no literature source and mirrors jugular_flow_risk_mapping's identical placeholder value for architectural consistency with the approved venous model - it is a simulation placeholder, not a clinical prior."
+    },
+    "scientific_purpose": "Supplies the LR+ /LR- values and starting prior consumed by monitoring/engine.py's SANS Bayesian formula, parallel to jugular_flow_risk_mapping for venous.",
+    "assumption_kind": "numerical",
+    "related_parameters": ["onsd_accuracy_koziarz_2019_rev1"],
+    "approval_status": "approved",
+    "approved_by": "Collaborator (final-submission directive, 2026-11-15)",
+    "limitations": "The LR values are a real cited meta-analysis (Koziarz 2019) but for ICU/ICP diagnosis, not SANS - applying them to SANS is the reuse decision recorded in sans_probability_model/onsd_icu_cutoff_reuse_scope. starting_synthetic_prior_pct is an unsourced placeholder, labeled as such wherever displayed."
+  },
+  {
     "assumption_id": "venous_probability_model",
     "description": "Whether and how to produce any calibrated numeric probability for venous stasis, versus keeping venous monitoring as a qualitative/insufficient-evidence state.",
     "value_or_range": "Approved: venous monitoring may emit a numeric probability via a standard Bayesian prior-odds x likelihood-ratio model, using the flow-class likelihood ratios approved under jugular_flow_risk_mapping. The update uses ONLY the single latest available flow-class observation in a case's history per assessment - sequential daily likelihood ratios must NOT be multiplied together without additional approval, since consecutive daily jugular readings on the same astronaut are plausibly correlated, not independent evidence. Every output of this model must be labeled 'Simulation placeholder - unvalidated', not presented as a clinically validated risk estimate.",
@@ -116,13 +144,13 @@
   {
     "assumption_id": "onsd_icu_cutoff_reuse_scope",
     "description": "Whether, and exactly how, the ICU/ICP 5.0mm ONSD cutoff may be reused within SANS monitoring (e.g. as a soft trend marker rather than a hard diagnostic threshold).",
-    "value_or_range": null,
-    "scientific_purpose": "Would govern how onsd_icu_icp_cutoff may be consumed by the SANS Monitoring Engine (future phase), if at all.",
+    "value_or_range": "Approved (final-submission directive, 2026-11-15): reused as the binary test threshold feeding a Bayesian LR+/LR- probability update (sans_probability_model / onsd_cutoff_risk_mapping) - not used as a standalone binary diagnosis.",
+    "scientific_purpose": "Governs how onsd_icu_icp_cutoff is consumed by the SANS Monitoring Engine, via the approved Bayesian LR model.",
     "assumption_kind": "scope_decision",
     "related_parameters": ["onsd_icu_icp_cutoff", "onsd_healthy_baseline_range"],
-    "approval_status": "unapproved",
-    "approved_by": null,
-    "limitations": "The source document itself labels this cutoff 'Established for ICU ICP; Assumption when applied to SANS' - the reuse itself is the open question, independent of the cutoff value. Not addressed by Rahat's 2026-11-04 approvals."
+    "approval_status": "approved",
+    "approved_by": "Collaborator (final-submission directive, 2026-11-15)",
+    "limitations": "The source document itself labels this cutoff 'Established for ICU ICP; Assumption when applied to SANS' - reused here by explicit 2026-11-15 directive, not because new SANS-specific evidence appeared. See sans_probability_model's limitations for the resulting false-alarm tradeoff."
   },
   {
     "assumption_id": "onsd_interobserver_noise_magnitude",

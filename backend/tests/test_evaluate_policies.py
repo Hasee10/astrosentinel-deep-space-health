@@ -66,10 +66,13 @@ def test_run_evaluation_against_real_registry_still_correctly_blocked(tmp_path):
     experiment_readiness gate now ALSO runs. Real generated ground truth always
     has has_sans_event=True astronauts with sans_onset_day=None (onset-day
     assignment is still genuinely unapproved) - AND, independently, no
-    physiological progression model or SANS monitoring rule exists yet, and
-    venous is missing all three of its eligibility conditions. The real pipeline
-    correctly stays blocked, for ALL of these reasons at once, none of them
-    papered over by the others."""
+    physiological progression model exists yet (the SANS monitoring rule itself
+    WAS approved by the 2026-11-15 final-submission directive - see
+    monitoring/engine.py - but that is a separate capability from the
+    generation-layer progression curve/onset placement), and venous is missing
+    all three of its eligibility conditions. The real pipeline correctly stays
+    blocked, for ALL of these reasons at once, none of them papered over by the
+    others."""
     paths = generate_crew(crew_size=12, seed=10, mission_duration_days=30, output_dir=tmp_path, run_id="run-eval-real")
     output_dir = tmp_path / "eval"
     outputs = run_evaluation(paths["crew_observations"], paths["ground_truth"], output_dir)
@@ -79,7 +82,7 @@ def test_run_evaluation_against_real_registry_still_correctly_blocked(tmp_path):
     capabilities = {b["capability"] for b in report["blockers"]}
     assert "sans_ground_truth_consistency" in capabilities
     assert "sans_physiological_progression" in capabilities
-    assert "sans_monitoring_rule" in capabilities
+    assert "sans_monitoring_rule" not in capabilities  # approved 2026-11-15, no longer a blocker
     assert "venous_ground_truth_consistency" in capabilities
     assert "venous_physiological_progression" in capabilities
     assert "venous_eligibility_conditions" in capabilities
@@ -98,9 +101,9 @@ def test_sans_readiness_clears_independently_once_onset_days_are_known(tmp_path)
     ground-truth-consistency blocker specifically. This is the explicit
     "resolving onset timing alone cannot produce an apparently valid full
     experiment" regression (ASTROSENTINEL correction, same-day extension):
-    sans_physiological_progression and sans_monitoring_rule are INDEPENDENT
-    capabilities that resolving onset timing says nothing about, so SANS still
-    blocks overall - and venous stays blocked regardless, since no venous
+    sans_physiological_progression (WHAT HAPPENS) is INDEPENDENT of onset timing,
+    so SANS still blocks overall even though its monitoring rule was separately
+    approved 2026-11-15 - and venous stays blocked regardless, since no venous
     event-occurrence model is approved at all (not a data-completeness problem
     fixture data could solve). Engineering fixture only - fixture-assigned onset
     days are not an approved rule."""
@@ -122,7 +125,7 @@ def test_sans_readiness_clears_independently_once_onset_days_are_known(tmp_path)
     capabilities = {b.capability for b in readiness.blockers}
     assert "sans_ground_truth_consistency" not in capabilities  # onset timing: fully resolved
     assert "sans_physiological_progression" in capabilities  # WHAT HAPPENS: still blocked
-    assert "sans_monitoring_rule" in capabilities  # detection formula: still blocked
+    assert "sans_monitoring_rule" not in capabilities  # approved 2026-11-15, no longer a blocker
     assert "venous_ground_truth_consistency" in capabilities
     assert readiness.ready is False  # resolving onset timing alone never makes the experiment ready
 

@@ -156,7 +156,7 @@ def test_empty_cohort_still_blocks_on_capability_readiness():
     assert "sans_ground_truth_consistency" not in capabilities
     assert "venous_ground_truth_consistency" not in capabilities
     assert "sans_physiological_progression" in capabilities
-    assert "sans_monitoring_rule" in capabilities
+    assert "sans_monitoring_rule" not in capabilities  # approved 2026-11-15, no longer a blocker
 
 
 def test_readiness_report_never_fabricates_a_count_for_missing_data():
@@ -175,11 +175,12 @@ def test_resolving_onset_timing_alone_does_not_produce_an_apparently_valid_exper
     """The exact scenario the correction asks to guard against: even a cohort
     with FULLY RESOLVED SANS onset-timing ground truth (as if
     sans_venous_onset_day_assignment were both approved and implemented) still
-    blocks, because sans_physiological_progression (WHAT HAPPENS, not WHEN) and
-    sans_monitoring_rule are independent capabilities - onset-day placement says
-    nothing about either of them. Approving the onset DECISION itself changes
-    nothing about them either, since they are tracked under entirely separate
-    design-decision ids."""
+    blocks, because sans_physiological_progression (WHAT HAPPENS, not WHEN) is an
+    independent capability from onset-day placement - approving the onset
+    DECISION itself changes nothing about it, since they are tracked under
+    entirely separate design-decision ids. (sans_monitoring_rule - the detection
+    FORMULA - was separately approved by the 2026-11-15 final-submission
+    directive; it is independent of both and no longer blocks.)"""
     cohort = [
         _case("A", has_sans_event=False, sans_onset_day=None),
         _case("B", has_sans_event=True, sans_onset_day=10),
@@ -191,7 +192,7 @@ def test_resolving_onset_timing_alone_does_not_produce_an_apparently_valid_exper
     capabilities = {b.capability for b in report.blockers}
     assert "sans_ground_truth_consistency" not in capabilities  # onset timing: fully resolved
     assert "sans_physiological_progression" in capabilities  # WHAT HAPPENS: still blocked
-    assert "sans_monitoring_rule" in capabilities  # detection formula: still blocked
+    assert "sans_monitoring_rule" not in capabilities  # approved 2026-11-15, no longer a blocker
     assert report.ready is False
 
     approved_onset_decision = DesignDecision(
@@ -205,7 +206,7 @@ def test_resolving_onset_timing_alone_does_not_produce_an_apparently_valid_exper
     report_after = check_experiment_readiness(cohort, registry)
     capabilities_after = {b.capability for b in report_after.blockers}
     assert "sans_physiological_progression" in capabilities_after
-    assert "sans_monitoring_rule" in capabilities_after
+    assert "sans_monitoring_rule" not in capabilities_after
     assert report_after.ready is False
 
 

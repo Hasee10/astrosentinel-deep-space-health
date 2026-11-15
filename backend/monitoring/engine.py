@@ -15,11 +15,17 @@ What this can legitimately compute, and why:
   must never be shown as a validated clinical estimate. Uses ONLY the single latest
   available flow-class observation per assessment - sequential daily likelihood
   ratios are never multiplied together (per the approval's own explicit condition).
-- A SANS probability is still NOT computable: sans_prior_mapping's 2026-11-04 approval
-  authorizes a synthetic GENERATION-layer susceptibility/event/time-prior scheme (see
-  simulation/physiological_generation.py) for ground truth only - it does not supply
-  an evidence-updated MONITORING-layer formula, so probability.sans stays None here,
-  with an explanation naming what is still missing.
+- A SANS probability (final-submission directive, 2026-11-15): now computable, because
+  sans_probability_model and onsd_cutoff_risk_mapping are both approved - see
+  _compute_sans_probability below. Reuses the real Koziarz 2019 ICU/ICP ONSD cutoff
+  and likelihood ratios (onsd_accuracy_koziarz_2019_rev1: cutoff 5.0mm, LR+ 6.93,
+  LR- 0.04) against the latest quality-OK ONSD reading, per onsd_icu_cutoff_reuse_scope's
+  2026-11-15 approval - the LRs are a real cited study, but for ICU/ICP, not SANS; the
+  starting prior is an unsourced simulation placeholder mirroring the venous model's.
+  Every output carries probability_label="Simulation placeholder - unvalidated". sans_
+  prior_mapping's separate 2026-11-04 approval (the GENERATION-layer susceptibility/
+  event/time-prior scheme in simulation/physiological_generation.py, for ground truth
+  only) remains unrelated and is still never read here.
 
 SANS and venous are assessed by two independent nested functions that never share state
 or read each other's scan/signal evidence - there is no code path that could produce a
@@ -42,7 +48,7 @@ VENOUS_SCAN_TYPES = {ScanType.JUGULAR}
 
 # capability -> blocking assumption_id(s), mirrors simulation/generator.py's pattern
 PROBABILITY_BLOCKERS = {
-    "sans": ["sans_prior_mapping"],
+    "sans": ["sans_probability_model", "onsd_cutoff_risk_mapping"],
     "venous": ["venous_probability_model", "jugular_flow_risk_mapping"],
 }
 TIER_THRESHOLD_BLOCKERS = ["decision_tier_thresholds"]
@@ -55,7 +61,7 @@ TIER_THRESHOLD_BLOCKERS = ["decision_tier_thresholds"]
 # Without this explicit set, `inactive` below would read as empty for sans the
 # moment sans_prior_mapping and decision_tier_thresholds are both active, wrongly
 # implying a monitoring model exists when none does.
-MONITORING_PROBABILITY_IMPLEMENTED = {"venous"}
+MONITORING_PROBABILITY_IMPLEMENTED = {"sans", "venous"}
 
 SIMULATION_PLACEHOLDER_LABEL = "Simulation placeholder - unvalidated"
 
@@ -186,6 +192,36 @@ def _compute_venous_probability(
     return posterior_probability, flow_class
 
 
+def _compute_sans_probability(
+    history: list[AstronautDayObservation], registry: Registry
+) -> float | None:
+    """Prior-odds x LR using ONLY the single latest quality-OK ONSD reading - never a
+    running/multiplied posterior across multiple days (mirrors _compute_venous_probability's
+    discipline, for the same correlated-evidence reason). Returns None if the model isn't
+    fully approved or no usable evidence exists."""
+    if not (
+        registry.assumptions["sans_probability_model"].is_active()
+        and registry.assumptions["onsd_cutoff_risk_mapping"].is_active()
+    ):
+        return None
+
+    latest = next((scan for o in reversed(history) for scan in measurements_of(o)
+                   if scan.type == ScanType.ONSD
+                   and scan.quality is not None
+                   and scan.quality.status == QualityStatus.OK
+                   and scan.onsd_mm is not None), None)
+    if latest is None:
+        return None
+
+    config = registry.assumptions["onsd_cutoff_risk_mapping"].value_or_range
+    lr = config["lr_positive"] if latest.onsd_mm >= config["cutoff_mm"] else config["lr_negative"]
+
+    prior = config["starting_synthetic_prior_pct"] / 100.0
+    prior_odds = prior / (1 - prior)
+    posterior_odds = prior_odds * lr
+    return posterior_odds / (1 + posterior_odds)
+
+
 def _tier_from_probability_pct(probability_pct: float, registry: Registry) -> TierValue:
     config = registry.assumptions["decision_tier_thresholds"].value_or_range
     if probability_pct >= config["urgent_min_pct"]:
@@ -289,33 +325,58 @@ def _assess_outcome(
     flow_class_used: str | None = None
     if outcome == "venous":
         probability, flow_class_used = _compute_venous_probability(history, registry)
+    elif outcome == "sans":
+        probability = _compute_sans_probability(history, registry)
 
     if probability is not None:
         tier = _tier_from_probability_pct(probability * 100.0, registry)
         floor = _minimum_tier_for_flow_class(flow_class_used, registry)
         if floor is not None and _TIER_RANK[floor] > _TIER_RANK[tier]:
             tier = floor
+        if outcome == "venous":
+            model_ref, evidence_text = "jugular_flow_risk_mapping", (
+                f"Venous probability computed as prior-odds x LR using the latest "
+                f"observed flow class ('{flow_class_used}'), per the approved "
+                f"jugular_flow_risk_mapping values, thresholded per "
+                f"decision_tier_thresholds."
+            )
+            model_note = (
+                "HYPOTHETICAL/SYNTHETIC: computed from a simulation-placeholder Bayesian "
+                "model (prior-odds x likelihood-ratio for the single latest flow-class "
+                "observation), not derived from any cited source and not a validated "
+                "clinical estimate. Sequential daily likelihood ratios are never "
+                "multiplied together."
+            )
+        else:
+            model_ref, evidence_text = "onsd_cutoff_risk_mapping", (
+                f"SANS probability computed as prior-odds x LR using the latest "
+                f"quality-OK ONSD reading against the 5.0mm cutoff, per the approved "
+                f"onsd_cutoff_risk_mapping values (LR+ 6.93 / LR- 0.04, reused from "
+                f"Koziarz et al. 2019's ICU/ICP study), thresholded per "
+                f"decision_tier_thresholds."
+            )
+            model_note = (
+                "HYPOTHETICAL/SYNTHETIC: computed from a Bayesian model whose LR values "
+                "are a real cited study (Koziarz 2019) for ICU/ICP, reused for SANS by "
+                "explicit 2026-11-15 directive, not because SANS-specific LR evidence "
+                "exists; the starting prior is an unsourced simulation placeholder. "
+                "About 90% of healthy astronauts sit above the 5.0mm absolute cutoff at "
+                "personal baseline, so this rule reads as elevated-probability far more "
+                "often than a personal-baseline-relative rule would. Sequential daily "
+                "likelihood ratios are never multiplied together."
+            )
         return OutcomeAssessment(
             probability=probability,
             probability_label=SIMULATION_PLACEHOLDER_LABEL,
             tier=tier,
             tier_reason=TierReason.PROBABILITY_THRESHOLD,
             measurement_quality=quality,
-            evidence_references=evidence_references + ["jugular_flow_risk_mapping", "decision_tier_thresholds"],
-            limitations=[
-                "HYPOTHETICAL/SYNTHETIC: computed from a simulation-placeholder Bayesian "
-                "model (prior-odds x likelihood-ratio for the single latest flow-class "
-                "observation), not derived from any cited source and not a validated "
-                "clinical estimate. Sequential daily likelihood ratios are never "
-                "multiplied together."
-            ],
+            evidence_references=evidence_references + [model_ref, "decision_tier_thresholds"],
+            limitations=[model_note],
             explanation=(
-                f"Venous probability computed as prior-odds x LR using the latest "
-                f"observed flow class ('{flow_class_used}'), per the approved "
-                f"jugular_flow_risk_mapping values, thresholded per "
-                f"decision_tier_thresholds. Labeled '{SIMULATION_PLACEHOLDER_LABEL}' - "
-                "this is a hackathon demonstration model, not a clinically validated "
-                "risk estimate, and must never be presented as one."
+                f"{evidence_text} Labeled '{SIMULATION_PLACEHOLDER_LABEL}' - this is a "
+                "hackathon demonstration model, not a clinically validated risk estimate, "
+                "and must never be presented as one."
             ),
         )
 
@@ -343,14 +404,15 @@ def _assess_outcome(
             "Returning an explicit unresolved state rather than a fabricated estimate."
         )
     else:
+        evidence_kind = "flow-class" if outcome == "venous" else "ONSD"
         limitation = (
             f"A {outcome} probability model is approved, but no usable evidence "
-            "(a valid, good-quality flow-class observation) is available in this "
+            f"(a valid, good-quality {evidence_kind} observation) is available in this "
             "astronaut's history yet."
         )
         explanation = (
             f"No numeric {outcome} probability can be computed yet: the approved model "
-            "needs a valid flow-class observation of acceptable quality, and none is "
+            f"needs a valid {evidence_kind} observation of acceptable quality, and none is "
             "present in this astronaut's history. Returning an explicit unresolved "
             "state rather than a fabricated estimate."
         )

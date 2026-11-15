@@ -16,6 +16,8 @@ from registry.models import ApprovalStatus, AssumptionKind, ExperimentalAssumpti
 
 EXPECTED_ASSUMPTION_IDS = {
     "sans_prior_mapping",
+    "sans_probability_model",
+    "onsd_cutoff_risk_mapping",
     "venous_probability_model",
     "decision_tier_thresholds",
     "onsd_baseline_sd_values",
@@ -42,15 +44,19 @@ def assumptions(known_parameter_ids):
     return load_assumptions(known_parameter_ids=known_parameter_ids)
 
 
-def test_all_14_assumptions_present(assumptions):
-    assert len(assumptions) == 14
+def test_all_16_assumptions_present(assumptions):
+    assert len(assumptions) == 16
     assert set(assumptions) == EXPECTED_ASSUMPTION_IDS
 
 
-# ASTROSENTINEL (2026-11-04): Rahat approved exactly these 8 of 14, each with a
-# recorded value/decision and approver - "Do not approve all 14 assumptions
-# automatically" is honored by this remaining-6 set staying untouched.
-APPROVED_ASSUMPTION_IDS = {
+# ASTROSENTINEL (2026-11-04): Rahat approved exactly 8 of the original 14, each with a
+# recorded value/decision and approver - "Do not approve all assumptions
+# automatically" is honored by the remaining set staying untouched.
+# ASTROSENTINEL (2026-11-15): the collaborator's final-submission directive separately
+# approved 3 more (sans_probability_model, onsd_cutoff_risk_mapping,
+# onsd_icu_cutoff_reuse_scope), each with its own recorded approver/value - see
+# registry/data/assumptions.json. The remaining 5 stay untouched by either approval.
+RAHAT_APPROVED_ASSUMPTION_IDS = {
     "sans_prior_mapping",
     "venous_probability_model",
     "decision_tier_thresholds",
@@ -60,9 +66,14 @@ APPROVED_ASSUMPTION_IDS = {
     "fixed_schedule_interval_choice",
     "onsd_scan_failure_rate",
 }
+COLLABORATOR_APPROVED_ASSUMPTION_IDS = {
+    "sans_probability_model",
+    "onsd_cutoff_risk_mapping",
+    "onsd_icu_cutoff_reuse_scope",
+}
+APPROVED_ASSUMPTION_IDS = RAHAT_APPROVED_ASSUMPTION_IDS | COLLABORATOR_APPROVED_ASSUMPTION_IDS
 UNAPPROVED_ASSUMPTION_IDS = {
     "ptt_trigger_assumed_usefulness",
-    "onsd_icu_cutoff_reuse_scope",
     "onsd_interobserver_noise_magnitude",
     "sans_cnn_reuse_scope",
     "evidence_atlas_lr_reliance",
@@ -70,24 +81,30 @@ UNAPPROVED_ASSUMPTION_IDS = {
 }
 
 
-def test_approved_and_unapproved_sets_partition_all_14(assumptions):
+def test_approved_and_unapproved_sets_partition_all_16(assumptions):
     assert set(assumptions) == APPROVED_ASSUMPTION_IDS | UNAPPROVED_ASSUMPTION_IDS
     assert APPROVED_ASSUMPTION_IDS & UNAPPROVED_ASSUMPTION_IDS == set()
 
 
 def test_approved_assumptions_are_active_with_recorded_approver(assumptions):
-    for aid in APPROVED_ASSUMPTION_IDS:
+    for aid in RAHAT_APPROVED_ASSUMPTION_IDS:
         a = assumptions[aid]
         assert a.approval_status == ApprovalStatus.APPROVED, aid
         assert a.approved_by == "Rahat", aid
         assert a.is_active() is True, aid
         assert a.value_or_range is not None, aid
+    for aid in COLLABORATOR_APPROVED_ASSUMPTION_IDS:
+        a = assumptions[aid]
+        assert a.approval_status == ApprovalStatus.APPROVED, aid
+        assert a.approved_by == "Collaborator (final-submission directive, 2026-11-15)", aid
+        assert a.is_active() is True, aid
+        assert a.value_or_range is not None, aid
 
 
 def test_remaining_assumptions_stay_unapproved(assumptions):
-    """Do not approve all 14 assumptions automatically - this is the explicit,
-    literal check that the 6 not addressed by Rahat's 2026-11-04 approvals are
-    untouched."""
+    """Do not approve every assumption automatically - this is the explicit,
+    literal check that the 5 not addressed by either Rahat's 2026-11-04 approvals
+    or the collaborator's 2026-11-15 directive are untouched."""
     for aid in UNAPPROVED_ASSUMPTION_IDS:
         a = assumptions[aid]
         assert a.approval_status == ApprovalStatus.UNAPPROVED, aid
@@ -268,7 +285,7 @@ def test_unknown_related_parameter_rejected(tmp_path):
         load_assumptions(path=bad_file, known_parameter_ids=frozenset({"some_other_param"}))
 
 
-def test_raw_json_is_a_list_of_14_objects():
+def test_raw_json_is_a_list_of_16_objects():
     raw = json.loads(ASSUMPTIONS_PATH.read_text(encoding="utf-8"))
     assert isinstance(raw, list)
-    assert len(raw) == 14
+    assert len(raw) == 16
