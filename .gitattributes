@@ -13,16 +13,19 @@
 # here means there is nothing for vn.txt's rule below to fail to override.
 * text=auto
 
-# vn.txt predates this convention and is committed with CRLF line endings -
-# its sha256 hash is pinned in tests/test_source_documents_unchanged.py.
-# -text means "never normalize this file's line endings, under any platform
-# or tool" - the one safe way to keep an already-hashed file byte-identical
-# forever, rather than trying to make a normalization rule match a hash it
-# was never computed against.
-vn.txt -text
+# vn.txt's dedicated `-text` rule was removed 2026-11-15: vn.txt is no longer
+# tracked in this repository at all (git rm --cached; kept on disk locally
+# only - see .gitignore and tests/test_source_documents_unchanged.py), so a
+# checkout attribute for a path git never checks out here is dead weight,
+# not a safety net. If vn.txt is ever re-added to this repo, restore
+# `vn.txt -text` before committing it - its pinned hash is CRLF-sensitive
+# raw bytes, for exactly the reason explained above.
 
 # Explicit binary - avoids relying on git's own content-sniffing heuristics
 # for files whose integrity also matters (source documents, generated art).
+# Mission_NASA*.docx are untracked for the same reason as vn.txt above (see
+# .gitignore) - this *.docx rule is now general policy for any future
+# tracked .docx, not specifically for those two files.
 *.docx -text
 *.png -text
 *.webp -text
