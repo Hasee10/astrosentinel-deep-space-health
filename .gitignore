@@ -5,3 +5,13 @@ backend/outputs/
 
 frontend/test-results/
 frontend/playwright-report/
+
+# Primary source documents (Mission_NASA(1).docx, Mission_NASA_updated.docx, vn.txt):
+# removed from the public repository by explicit request, kept locally on disk only.
+# backend/tests/test_source_documents_unchanged.py reads these from the project root -
+# it passes here (the files are still present on disk) but WILL FAIL on a fresh clone
+# of this repository, since the files are no longer tracked. This is a known,
+# deliberate consequence, not an oversight - see that test file's own docstring.
+Mission_NASA(1).docx
+Mission_NASA_updated.docx
+vn.txt

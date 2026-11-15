@@ -8,7 +8,7 @@ Synthetic deep-space astronaut health monitoring research platform — SANS and 
 
 **Research prototype. Not clinically validated. No real medical diagnosis.**
 
-[Live demo](#) · [Research results](docs/research/results/RESULTS_FOR_SLIDES.md) · [Reproduce the study](#quick-start)
+[Live demo](https://astrosentinel-deep-space-health.vercel.app) · [Research results](docs/research/results/RESULTS_FOR_SLIDES.md) · [Reproduce the study](#quick-start) · [Final submission](#final-submission)
 
 </div>
 
@@ -132,11 +132,17 @@ npm run build      # production build -> dist/
 
 **Backend (reproduce the research):**
 
+> `backend/tests/test_source_documents_unchanged.py` (4 of the 316 tests) hashes three
+> primary source documents (`Mission_NASA_updated.docx`, `Mission_NASA(1).docx`, `vn.txt`)
+> that are **not included in this public repository** by explicit request. Those 4 tests
+> will fail on a fresh clone unless you place your own copies of those three files at the
+> repository root first; the other 312 tests are unaffected.
+
 ```bash
 cd backend
 python -m venv .venv && . .venv/bin/activate   # or .venv\Scripts\activate on Windows
 pip install -r requirements.txt
-python -I -m pytest tests/ -q                           # 316 tests
+python -I -m pytest tests/ -q                           # 316 tests (312 without the 3 source documents above)
 python -I backend/datasets/mars30/validate_dataset.py backend/datasets/mars30   # dataset validator
 cd datasets/mars30 && python baseline_example.py && cd ../..   # ML baseline
 python -m evaluation.mars30_schedule_comparison          # fixed-vs-adaptive comparison
@@ -161,13 +167,19 @@ npm run check:data
 - **No clinical validation. No real medical diagnosis.** Every probability in the UI is labeled "Simulation placeholder - unvalidated."
 - **Authorization scope:** the approvals behind this model are user-relayed for this synthetic submission experiment only — not independent written research-lead sign-off, peer review, or clinical approval. See `backend/registry/data/assumptions.json` and [RESULTS_FOR_SLIDES.md](docs/research/results/RESULTS_FOR_SLIDES.md) for the full audit trail.
 
+## Final submission
+
+This repository's final-submission work (Mars30 dataset integration, the corrected SANS Bayesian model, the fixed-vs-adaptive scheduling study, the Research Results panel, and this cleanup) was committed and tagged **`v1.0.0-final-submission`**. See that tag's GitHub Release for the exact commit SHA and UTC/PKT timestamps, and [docs/research/results/RESULTS_FOR_SLIDES.md](docs/research/results/RESULTS_FOR_SLIDES.md) for the figures it produced.
+
+Only the files actually touched during this submission carry today's commit date on GitHub — most of `frontend/src/` and several `backend/` modules were written during earlier development (see their individual commit history) and correctly continue to show those original dates. A new tag does not, and should not, make every file in the repository appear freshly modified.
+
 ## Team and attribution
 
 Project repository maintained by [Hasee10](https://github.com/Hasee10). No other contributors, affiliations, or awards are claimed.
 
 ## Links
 
-- Live demo: add the deployed Vercel URL here once published
+- [Live demo](https://astrosentinel-deep-space-health.vercel.app)
 - [Research results](docs/research/results/RESULTS_FOR_SLIDES.md)
 - [Reproduction instructions](#quick-start)
 - [GitHub repository](https://github.com/Hasee10/astrosentinel-deep-space-health)

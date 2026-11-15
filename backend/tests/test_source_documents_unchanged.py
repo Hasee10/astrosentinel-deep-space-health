@@ -1,5 +1,13 @@
 """Proves the original source documents were not modified while building the registry.
 
+NOTE (2026-11-15): by explicit request, Mission_NASA_updated.docx, Mission_NASA(1).docx,
+and vn.txt were removed from the public GitHub repository (git rm --cached + .gitignore)
+but kept on disk in the local working copy. These four tests pass HERE because the files
+are still physically present - they WILL FAIL on a fresh clone of the public repository,
+since the files are no longer tracked. That is a known, deliberate consequence of the
+removal, not a bug to fix by weakening these tests. Anyone running this suite from a
+fresh clone needs a local copy of the three files at the project root first.
+
 Hashes were recorded before any Phase 0 file was written. Mission_NASA(1).docx's hash
 was recorded the moment it was found and copied into the project (ASTROSENTINEL
 correction, 2026-11-04) - it supplements, never replaces, Mission_NASA_updated.docx.
