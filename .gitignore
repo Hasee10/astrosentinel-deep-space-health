@@ -15,3 +15,8 @@ frontend/playwright-report/
 Mission_NASA(1).docx
 Mission_NASA_updated.docx
 vn.txt
+
+# .claude/ (local Claude Code tool config - dev-server launch shortcuts for this
+# machine's preview tooling, not project source): removed from the public
+# repository by explicit request, kept locally on disk only.
+.claude/
