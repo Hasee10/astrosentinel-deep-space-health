@@ -2,7 +2,7 @@
   "label": "Mars30 collaborator dataset - final-submission synthetic study",
   "validated_for_experiment": false,
   "disclaimer": "SYNTHETIC. Not clinically validated. Every figure below is a computed result of this repository's own code against a synthetic dataset.",
-  "correction_notice": "An earlier version of this study tested the latest ONSD against an absolute 5.0mm cutoff. That was a misreading of the collaborator's specification (personal-baseline-relative, +0.4mm) and produced an unusable ~96-99% false-escalation rate. Corrected 2026-11-15; the superseded run is preserved at handoff/submission/AUDIT_superseded_absolute_cutoff_run/.",
+  "correction_notice": "An earlier version of this study tested the latest ONSD against an absolute 5.0mm cutoff. That was a misreading of the collaborator's specification (personal-baseline-relative, +0.4mm) and produced an unusable ~96-99% false-escalation rate. Corrected 2026-11-15; the superseded run is preserved at docs/research/results/AUDIT_superseded_absolute_cutoff_run/.",
   "dataset": {
     "astronauts": 300,
     "mission_days": 30,
@@ -98,7 +98,8 @@
     "authorization_scope": "User-relayed approval for this synthetic submission experiment only - not independent written research-lead sign-off, peer review, or clinical validation. The LR values are a real cited figure (Koziarz et al. 2019) for an absolute-cutoff ICU/ICP test; reusing them for this personal-baseline-delta SANS test is an additional reuse choice, not something that study itself measured."
   },
   "fixed_vs_adaptive": {
-    "description": "SANS only, per directive. Positive test = latest quality-OK ONSD reading >= 0.4mm above this astronaut's own causally-estimated personal baseline (median of the first 3 quality-OK readings this policy has actually taken), NOT an absolute cutoff - corrected 2026-11-15 from an earlier absolute-5.0mm-cutoff version (see handoff/submission/AUDIT_superseded_absolute_cutoff_run/). Alert = posterior >= 15% (decision_tier_thresholds.repeat_min_pct) - the single-latest-reading LR+6.93 model from a 5% prior cannot reach the 40% Consult threshold (posterior caps at ~26.7%), the same structural ceiling test_recovery_acceptance.py documents for the venous LR=10 case. Jugular-only days (4,11,18,25) never carry an ONSD reading.",
+    "description": "SANS only, per directive. Positive test = latest quality-OK ONSD reading >= 0.4mm above this astronaut's own causally-estimated personal baseline (median of the first 3 quality-OK readings this policy has actually taken), NOT an absolute cutoff - corrected 2026-11-15 from an earlier absolute-5.0mm-cutoff version (see docs/research/results/AUDIT_superseded_absolute_cutoff_run/). Alert = posterior >= 15% (decision_tier_thresholds.repeat_min_pct) - the single-latest-reading LR+6.93 model from a 5% prior cannot reach the 40% Consult threshold (posterior caps at ~26.7%), the same structural ceiling test_recovery_acceptance.py documents for the venous LR=10 case. Jugular-only days (4,11,18,25) never carry an ONSD reading.",
+    "trade_off_summary": "Adaptive scanning is a trade-off, not an unconditional win. At every interval it detects more events, reduces detection delay, uses more scans, AND produces more false escalations - all four move together. Never read the delay/detection improvement alone as 'adaptive is better'; the false-escalation and scan-cost columns are part of the same result.",
     "trigger_accuracy_used": 0.7,
     "trigger_accuracy_approved_sweep": [
       0.5,

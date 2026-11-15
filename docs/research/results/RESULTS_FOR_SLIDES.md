@@ -13,7 +13,7 @@ the collaborator's actual specification - a **personal-baseline-relative**
 rule (positive when the latest valid ONSD is ≥0.4mm above that astronaut's own
 causally-estimated baseline) - and every number below reflects the corrected
 model. The superseded run is preserved, clearly marked, at
-`handoff/submission/AUDIT_superseded_absolute_cutoff_run/`.
+`docs/research/results/AUDIT_superseded_absolute_cutoff_run/`.
 
 ## 0. Authorization scope (audited)
 
@@ -72,7 +72,7 @@ regardless of event status.
 ## 4. Fixed-vs-adaptive SANS scanning comparison (corrected)
 
 `backend/evaluation/mars30_schedule_comparison.py` (full output:
-`handoff/submission/mars30_schedule_comparison.json`). SANS only, per
+`docs/research/results/mars30_schedule_comparison.json`). SANS only, per
 directive; venous is excluded from the comparison. Alert = posterior ≥ 15%
 (the single-latest-reading LR+6.93 model from a 5% prior caps at ~26.7%
 posterior and can never reach the 40% Consult threshold). Jugular-only days
@@ -97,19 +97,21 @@ backstop + HRV-proxy trigger-prompted extra scans (assumed trigger accuracy
 
 **Honest reading:**
 
-- With the corrected personal-baseline rule, **adaptive scanning now reliably
-  beats fixed scanning on every measured axis** at every interval: more
-  events detected (93→98, 91→101, 60→84), lower median delay (11→10, 13→11,
-  19.5→14 days), at a consistent cost of roughly **0.9-1.0 days of detection
-  delay saved per extra scan used** - a stable, interpretable number across
-  all three intervals, unlike the superseded run's erratic 0.23-0.80 range.
-- The tradeoff is a higher false-escalation rate for adaptive at every
-  interval (small at 3-day: 18.2%→18.8%; largest at 14-day: 1.1%→6.8%,
-  because the sparse 14-day fixed backstop leaves more room for the trigger's
-  own ~5%/day base false-fire rate to add false alerts across more unscanned
-  days). This is a real cost, not hidden: adaptive scanning detects more,
-  faster, but alerts slightly more often on astronauts who never have an
-  event.
+- With the corrected personal-baseline rule, **adaptive scanning is a real
+  trade-off, not a free win.** At every interval it: detects more events
+  (93→98, 91→101, 60→84), reduces median delay (11→10, 13→11, 19.5→14 days),
+  **and** costs more scans (+374/+438/+477) **and** produces more false
+  escalations (18.2%→18.8%, 8.5%→10.2%, 1.1%→6.8%). All four of those move
+  together - adaptive is not simply "better" or "worse," it buys faster,
+  more complete detection at the price of more scans and more false alarms.
+  The rate at which it buys delay reduction is a stable ~0.9-1.0 detection-
+  days saved per extra scan across all three intervals (unlike the
+  superseded run's erratic 0.23-0.80 range), but that number says nothing
+  about the false-escalation cost, which must be weighed separately.
+- The false-escalation increase is largest at 14-day (1.1%→6.8%) because the
+  sparse 14-day fixed backstop leaves more room for the trigger's own ~5%/day
+  base false-fire rate to add false alerts across more unscanned days. This
+  is a real cost, not hidden.
 - Detection is still far from complete (60-101/124 events, missing 23-64),
   and the 14-day fixed baseline is particularly weak (60/124, 19.5-day median
   delay) - a sparse fixed schedule is a real liability this dataset

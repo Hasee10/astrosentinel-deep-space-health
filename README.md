@@ -8,7 +8,7 @@ Synthetic deep-space astronaut health monitoring research platform — SANS and 
 
 **Research prototype. Not clinically validated. No real medical diagnosis.**
 
-[Live demo](#) · [Research results](handoff/submission/RESULTS_FOR_SLIDES.md) · [Reproduce the study](#quick-start)
+[Live demo](#) · [Research results](docs/research/results/RESULTS_FOR_SLIDES.md) · [Reproduce the study](#quick-start)
 
 </div>
 
@@ -77,15 +77,17 @@ See [Screenshots](#screenshots) above — landing page, mission overview with li
 
 ## Research results
 
-See **[handoff/submission/RESULTS_FOR_SLIDES.md](handoff/submission/RESULTS_FOR_SLIDES.md)** for the full write-up, and the live app's **Research → Results** panel for the same figures rendered interactively. Highlights (all synthetic, all reproducible from this repo):
+See **[docs/research/results/RESULTS_FOR_SLIDES.md](docs/research/results/RESULTS_FOR_SLIDES.md)** for the full write-up, and the live app's **Research → Results** panel for the same figures rendered interactively. Highlights (all synthetic, all reproducible from this repo):
 
-| Interval | Fixed detected / 124 events | Adaptive detected / 124 events | Days saved per extra scan |
-|---|---|---|---|
-| 3-day | 93 | 98 | 0.97 |
-| 7-day | 91 | 101 | 0.88 |
-| 14-day | 60 | 84 | 0.94 |
+| Interval | Fixed detected / 124 events | Adaptive detected / 124 events | Days saved per extra scan | False-escalation rate (fixed → adaptive) |
+|---|---|---|---|---|
+| 3-day | 93 | 98 | 0.97 | 18.2% → 18.8% |
+| 7-day | 91 | 101 | 0.88 | 8.5% → 10.2% |
+| 14-day | 60 | 84 | 0.94 | 1.1% → 6.8% |
 
-An earlier version of this study used an absolute ONSD cutoff instead of a personal-baseline-relative rule and produced an unusable ~96-99% false-escalation rate. That run is preserved, clearly marked as superseded, at [`handoff/submission/AUDIT_superseded_absolute_cutoff_run/`](handoff/submission/AUDIT_superseded_absolute_cutoff_run/) — the corrected methodology and figures above are what should be cited.
+Adaptive scanning is a genuine trade-off, not an unconditional win: at every interval it detects more events and reduces delay, but also uses more scans and produces more false escalations — all four move together. See the full write-up for the complete reading, including why the Consult tier (40% posterior) is structurally unreachable under this single-reading model.
+
+An earlier version of this study used an absolute ONSD cutoff instead of a personal-baseline-relative rule and produced an unusable ~96-99% false-escalation rate. That run is preserved, clearly marked as superseded, at [`docs/research/results/AUDIT_superseded_absolute_cutoff_run/`](docs/research/results/AUDIT_superseded_absolute_cutoff_run/) — the corrected methodology and figures above are what should be cited.
 
 ## Technology stack
 
@@ -157,7 +159,7 @@ npm run check:data
 - **The SANS Bayesian rule** reuses Koziarz et al. 2019's real LR+/LR- figures (6.93 / 0.04), derived from an absolute-cutoff ICU/ICP study, applied here to a *different*, personal-baseline-relative test — an explicit reuse choice, not something that study itself measured. The 5% starting prior has no literature source.
 - **The adaptive trigger** is a weak-signal (HRV-proxy) simulation at an assumed accuracy (0.7, within an approved 0.5–0.9 sweep), not a measured sensor.
 - **No clinical validation. No real medical diagnosis.** Every probability in the UI is labeled "Simulation placeholder - unvalidated."
-- **Authorization scope:** the approvals behind this model are user-relayed for this synthetic submission experiment only — not independent written research-lead sign-off, peer review, or clinical approval. See `backend/registry/data/assumptions.json` and [RESULTS_FOR_SLIDES.md](handoff/submission/RESULTS_FOR_SLIDES.md) for the full audit trail.
+- **Authorization scope:** the approvals behind this model are user-relayed for this synthetic submission experiment only — not independent written research-lead sign-off, peer review, or clinical approval. See `backend/registry/data/assumptions.json` and [RESULTS_FOR_SLIDES.md](docs/research/results/RESULTS_FOR_SLIDES.md) for the full audit trail.
 
 ## Team and attribution
 
@@ -166,6 +168,6 @@ Project repository maintained by [Hasee10](https://github.com/Hasee10). No other
 ## Links
 
 - Live demo: add the deployed Vercel URL here once published
-- [Research results](handoff/submission/RESULTS_FOR_SLIDES.md)
+- [Research results](docs/research/results/RESULTS_FOR_SLIDES.md)
 - [Reproduction instructions](#quick-start)
 - [GitHub repository](https://github.com/Hasee10/astrosentinel-deep-space-health)

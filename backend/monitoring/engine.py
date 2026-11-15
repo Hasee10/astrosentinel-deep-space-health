@@ -24,7 +24,7 @@ What this can legitimately compute, and why:
   implementation tested an absolute 5.0mm cutoff instead; that was a misreading of
   the collaborator's specification, produced an unusable ~96-99% false-escalation
   rate, and is preserved only as an audit record (see
-  handoff/submission/AUDIT_superseded_absolute_cutoff_run/) - onsd_icu_cutoff_reuse_
+  docs/research/results/AUDIT_superseded_absolute_cutoff_run/) - onsd_icu_cutoff_reuse_
   scope, briefly approved for that version, is reverted to unapproved, since the
   corrected code never reads the absolute cutoff value at all. The LR+/LR- numbers
   (onsd_accuracy_koziarz_2019_rev1: 6.93 / 0.04) are still reused from Koziarz 2019,
@@ -320,7 +320,7 @@ def _assess_outcome(
                 "Urgent too (see _any_red_flag), since no human-approved "
                 "resolution/reset/clearance policy currently exists. This is a deliberate "
                 "conservative default, not an oversight - see "
-                "handoff/research_lead/DECISIONS_NEEDED_NOW.md."
+                "docs/research/research_lead/DECISIONS_NEEDED_NOW.md."
             ),
         )
 

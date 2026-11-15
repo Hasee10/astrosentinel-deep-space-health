@@ -24,7 +24,7 @@ shows a warning if the data reports any other schema version.
 ## `fixtures/`: mock and old example data
 
 None of this is current backend output. These files come from
-`handoff/frontend/examples/`.
+`docs/research/frontend/examples/`.
 
 | File | What it is |
 |---|---|

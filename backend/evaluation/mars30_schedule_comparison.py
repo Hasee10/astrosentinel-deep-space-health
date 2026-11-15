@@ -237,7 +237,7 @@ def run_comparison(
         "trigger_accuracy_used": trigger_accuracy,
         "n_event_astronauts": results["fixed_7d"].n_event_astronauts,
         "n_nonevent_astronauts": results["fixed_7d"].n_nonevent_astronauts,
-        "note": "SANS only, per directive. Positive test = latest quality-OK ONSD reading >= 0.4mm above this astronaut's own causally-estimated personal baseline (median of the first 3 quality-OK readings this policy has actually taken), NOT an absolute cutoff - corrected 2026-11-15 from an earlier absolute-5.0mm-cutoff version (see handoff/submission/AUDIT_superseded_absolute_cutoff_run/). Alert = posterior >= 15% (decision_tier_thresholds.repeat_min_pct) - the single-latest-reading LR+6.93 model from a 5% prior cannot reach the 40% Consult threshold (posterior caps at ~26.7%), the same structural ceiling test_recovery_acceptance.py documents for the venous LR=10 case. Jugular-only days (4,11,18,25) never carry an ONSD reading.",
+        "note": "SANS only, per directive. Positive test = latest quality-OK ONSD reading >= 0.4mm above this astronaut's own causally-estimated personal baseline (median of the first 3 quality-OK readings this policy has actually taken), NOT an absolute cutoff - corrected 2026-11-15 from an earlier absolute-5.0mm-cutoff version (see docs/research/results/AUDIT_superseded_absolute_cutoff_run/). Alert = posterior >= 15% (decision_tier_thresholds.repeat_min_pct) - the single-latest-reading LR+6.93 model from a 5% prior cannot reach the 40% Consult threshold (posterior caps at ~26.7%), the same structural ceiling test_recovery_acceptance.py documents for the venous LR=10 case. Jugular-only days (4,11,18,25) never carry an ONSD reading.",
         "by_interval": summary,
     }
 
@@ -245,7 +245,7 @@ def run_comparison(
 def main() -> None:
     dataset_dir = Path(__file__).resolve().parents[1] / "datasets" / "mars30"
     out = run_comparison(dataset_dir)
-    out_path = Path(__file__).resolve().parents[2] / "handoff" / "submission" / "mars30_schedule_comparison.json"
+    out_path = Path(__file__).resolve().parents[2] / "docs" / "research" / "results" / "mars30_schedule_comparison.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(out, indent=2), encoding="utf-8")
     print(json.dumps(out, indent=2))

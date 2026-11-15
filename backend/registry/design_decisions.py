@@ -52,7 +52,7 @@ DESIGN_DECISIONS: dict[str, DesignDecision] = {
             "the 0.1 vs 0.5 prior supersession, model provenance, evidence aggregation, quality handling, "
             "venous noise distributions, shared retries and adaptive precedence. User-relayed on 2026-11-13; "
             "this records provenance only, not independently verified Rahat sign-off. See "
-            "handoff/research_lead/RECOVERY_APPROVAL_SHEET.md."
+            "docs/research/research_lead/RECOVERY_APPROVAL_SHEET.md."
         ),
     ),
     "sans_venous_onset_day_assignment": DesignDecision(
@@ -68,7 +68,7 @@ DESIGN_DECISIONS: dict[str, DesignDecision] = {
             "Method translating an assumed trigger accuracy/usefulness value "
             "into day-by-day synthetic trigger-fire decisions for a case. "
             "Blocks evaluation/sweep.py::sweep_blockers() unconditionally until "
-            "approved AND implemented - see handoff/research_lead/"
+            "approved AND implemented - see docs/research/research_lead/"
             "BLOCKER_QUESTIONS.md items 8-9 for the candidate methods."
         ),
         approved=True,
@@ -105,7 +105,7 @@ DESIGN_DECISIONS: dict[str, DesignDecision] = {
             "reducing total scans, with explicit max-gap/safety rules) vs. "
             "Option C (a fixed scan budget reallocated to more informative "
             "days). See evaluation/policies.py::AdaptiveSchedulePolicy's "
-            "docstring and handoff/research_lead/DECISIONS_NEEDED_NOW.md."
+            "docstring and docs/research/research_lead/DECISIONS_NEEDED_NOW.md."
         ),
         approved=False,
         decision_text=(

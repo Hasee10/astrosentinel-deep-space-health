@@ -12,7 +12,7 @@ What stays blocked, on purpose, even after this module exists:
   sans_venous_onset_day_assignment, still unapproved (no onset day exists to
   superimpose anything on yet). `generate_sans_progression_offset` below IS now
   implemented and tested against the exact candidate rule in
-  handoff/research_lead/PROPOSED_sans_physiological_progression.md (fit from an
+  docs/research/research_lead/PROPOSED_sans_physiological_progression.md (fit from an
   EXTERNAL, unverified 20,000-astronaut CSV - not the parameter sheet, not Rahat) -
   but it is a free function nothing in the live generate_crew.py call path invokes,
   and `sans_physiological_progression` stays BLOCKED_MISSING_MODEL_RULE in
@@ -91,7 +91,7 @@ def generate_sans_progression_offset(day: int, sans_onset_day: int | None, regis
     output is unchanged from before this function existed.
 
     The implemented formula, which activates only if/when Rahat approves it, is
-    EXACTLY the candidate characterized in handoff/research_lead/
+    EXACTLY the candidate characterized in docs/research/research_lead/
     PROPOSED_sans_physiological_progression.md: fit from an EXTERNAL, unverified
     20,000-astronaut CSV (not the parameter sheet, not previously Rahat-approved
     input) - linear, +0.04mm per day since onset, uncapped. That document's own

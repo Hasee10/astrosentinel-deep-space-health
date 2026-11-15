@@ -51,7 +51,7 @@ class AdaptiveSchedulePolicy:
 
     Two other designs were explicitly NOT implemented here, because they would
     materially change what the experiment measures and need research-lead
-    sign-off first (see handoff/research_lead/DECISIONS_NEEDED_NOW.md):
+    sign-off first (see docs/research/research_lead/DECISIONS_NEEDED_NOW.md):
 
     - OPTION B: defer or replace some fixed-interval scans based on evidence,
       potentially reducing total scans, with explicit maximum-scan-gap and safety
@@ -110,7 +110,7 @@ class AdaptiveReplacementSchedulePolicy:
     6. **Separate SANS/venous acquisition accounting** - NOT implemented: this
        class returns one boolean "is a scan due", with no per-outcome distinction.
        The shared contract also currently allows only one structured `scan` per
-       astronaut-day (see handoff/research_lead/DECISIONS_NEEDED_NOW.md item 6) -
+       astronaut-day (see docs/research/research_lead/DECISIONS_NEEDED_NOW.md item 6) -
        a same-day dual SANS+venous acquisition policy is a separate, still-open
        schema question this class does not address.
     """

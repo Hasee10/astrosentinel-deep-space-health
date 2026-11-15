@@ -7,7 +7,7 @@ number:
 
   - backend/datasets/mars30/baseline_results.json (ML baseline, reproduced by
     the dataset's own baseline_example.py)
-  - handoff/submission/mars30_schedule_comparison.json (fixed-vs-adaptive SANS
+  - docs/research/results/mars30_schedule_comparison.json (fixed-vs-adaptive SANS
     scheduling comparison, backend/evaluation/mars30_schedule_comparison.py)
   - backend/outputs/mars30_pipeline/scoring_summary.json (SANS/venous tier
     distribution over the full published cohort)
@@ -30,7 +30,7 @@ REPO_ROOT = BACKEND_DIR.parent
 
 def main() -> int:
     baseline = json.loads((BACKEND_DIR / "datasets" / "mars30" / "baseline_results.json").read_text(encoding="utf-8"))
-    schedule = json.loads((REPO_ROOT / "handoff" / "submission" / "mars30_schedule_comparison.json").read_text(encoding="utf-8"))
+    schedule = json.loads((REPO_ROOT / "docs" / "research" / "results" / "mars30_schedule_comparison.json").read_text(encoding="utf-8"))
     scoring_summary = json.loads((BACKEND_DIR / "outputs" / "mars30_pipeline" / "scoring_summary.json").read_text(encoding="utf-8"))
 
     out = {
@@ -41,7 +41,7 @@ def main() -> int:
             "An earlier version of this study tested the latest ONSD against an absolute 5.0mm cutoff. "
             "That was a misreading of the collaborator's specification (personal-baseline-relative, "
             "+0.4mm) and produced an unusable ~96-99% false-escalation rate. Corrected 2026-11-15; the "
-            "superseded run is preserved at handoff/submission/AUDIT_superseded_absolute_cutoff_run/."
+            "superseded run is preserved at docs/research/results/AUDIT_superseded_absolute_cutoff_run/."
         ),
         "dataset": {
             "astronauts": 300,
@@ -79,6 +79,13 @@ def main() -> int:
         },
         "fixed_vs_adaptive": {
             "description": schedule["note"],
+            "trade_off_summary": (
+                "Adaptive scanning is a trade-off, not an unconditional win. At every interval it detects "
+                "more events, reduces detection delay, uses more scans, AND produces more false "
+                "escalations - all four move together. Never read the delay/detection improvement alone "
+                "as 'adaptive is better'; the false-escalation and scan-cost columns are part of the same "
+                "result."
+            ),
             "trigger_accuracy_used": schedule["trigger_accuracy_used"],
             "trigger_accuracy_approved_sweep": [0.5, 0.6, 0.7, 0.8, 0.9],
             "n_event_astronauts": schedule["n_event_astronauts"],

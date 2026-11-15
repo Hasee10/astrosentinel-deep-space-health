@@ -3,7 +3,7 @@ import { mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 
-const screenshots = fileURLToPath(new URL("../../handoff/frontend/ux-recovery/screenshots/", import.meta.url));
+const screenshots = fileURLToPath(new URL("../test-results/readability-screenshots/", import.meta.url));
 mkdirSync(screenshots, { recursive: true });
 async function snap(page, name) { await page.screenshot({ path: join(screenshots, `${name}.png`), fullPage: true }); }
 async function nav(page, name) {

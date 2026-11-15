@@ -58,7 +58,7 @@ def test_rejects_non_positive_interval(bad_interval):
 # ---- Issue B (Unified Prompt 8-9): adaptive is "fixed backstop + triggered scans" ----
 # It can only ADD scans relative to fixed, never remove or defer them. These tests
 # pin that semantic down so it can never silently become Option B/C (see
-# AdaptiveSchedulePolicy's docstring and handoff/research_lead/DECISIONS_NEEDED_NOW.md)
+# AdaptiveSchedulePolicy's docstring and docs/research/research_lead/DECISIONS_NEEDED_NOW.md)
 # without the tests themselves being deliberately changed.
 
 

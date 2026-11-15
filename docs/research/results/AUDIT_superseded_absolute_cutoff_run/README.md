@@ -14,5 +14,5 @@ LR+/LR- numbers for a differently-specified test.
 
 Kept here only so the correction is auditable - what changed, and why the
 originally-reported ~96-99% false-escalation rate was wrong for the requested
-model. See `handoff/submission/RESULTS_FOR_SLIDES.md` (repository root
+model. See `docs/research/results/RESULTS_FOR_SLIDES.md` (repository root
 version, not this folder) for the corrected, final figures.

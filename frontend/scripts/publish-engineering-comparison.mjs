@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 // Aggregate metrics only. No per-astronaut label, hidden onset or trajectory is
 // copied into the website. This never invokes the gated scientific runner.
-const source = readFileSync(new URL("../../handoff/research_lead/RECOVERY_ENGINEERING_RESULTS.json", import.meta.url), "utf8");
+const source = readFileSync(new URL("../../docs/research/research_lead/RECOVERY_ENGINEERING_RESULTS.json", import.meta.url), "utf8");
 const report = JSON.parse(source);
 if (report.validated_for_experiment !== false || !report.label.includes("ENGINEERING FIXTURE")) throw new Error("Expected explicitly unvalidated engineering results");
 const outcome = row => Object.fromEntries(["detected_events", "mean_detection_delay", "missed_events", "false_escalation_days", "falsely_escalated_astronauts", "tier_distribution"].map(key => [key, row[key]]));

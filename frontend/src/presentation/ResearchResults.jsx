@@ -78,6 +78,7 @@ export default function ResearchResults({ manifest }) {
       </table></div>
 
       <h3>Fixed versus adaptive SANS scheduling</h3>
+      {data.fixed_vs_adaptive.trade_off_summary && <p className="pv-notice">{data.fixed_vs_adaptive.trade_off_summary}</p>}
       <p>{data.fixed_vs_adaptive.description}</p>
       <p>Trigger accuracy used: {data.fixed_vs_adaptive.trigger_accuracy_used} (approved sweep: {data.fixed_vs_adaptive.trigger_accuracy_approved_sweep.join(", ")}). {data.fixed_vs_adaptive.n_event_astronauts} event astronauts, {data.fixed_vs_adaptive.n_nonevent_astronauts} non-event astronauts.</p>
       {intervals.map(([interval, row]) => (

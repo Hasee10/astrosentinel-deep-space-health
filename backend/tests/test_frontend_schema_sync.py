@@ -1,6 +1,6 @@
 """ASTROSENTINEL correction (2026-11-04), Part 7: frontend schema compatibility.
 
-handoff/frontend/schema/*.schema.json are committed snapshots of each contract
+docs/research/frontend/schema/*.schema.json are committed snapshots of each contract
 model's Pydantic JSON schema, for a frontend that validates against them directly
 rather than importing this backend's Python types. A model change (e.g. adding
 SimulationManifest.capability_readiness, or TierReason.PROBABILITY_THRESHOLD) that
@@ -16,7 +16,7 @@ from pathlib import Path
 from contracts.models import AstronautDayObservation, BlockerReport, SimulationManifest
 from monitoring.engine import AssessmentResult
 
-SCHEMA_DIR = Path(__file__).resolve().parents[2] / "handoff" / "frontend" / "schema"
+SCHEMA_DIR = Path(__file__).resolve().parents[2] / "docs" / "research" / "frontend" / "schema"
 
 MODELS = {
     "astronaut_day_observation.schema.json": AstronautDayObservation,

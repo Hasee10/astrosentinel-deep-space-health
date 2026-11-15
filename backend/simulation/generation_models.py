@@ -370,7 +370,7 @@ GENERATION_MODEL_SPECS: dict[str, GenerationModelSpec] = {
         research_lead_decision_required=(
             "Choose and approve a method (e.g. a sensitivity/specificity model, "
             "or a fixed lead-time model) - see "
-            "handoff/research_lead/BLOCKER_QUESTIONS.md items 8-9."
+            "docs/research/research_lead/BLOCKER_QUESTIONS.md items 8-9."
         ),
     ),
     "sans_physiological_progression": GenerationModelSpec(
@@ -412,7 +412,7 @@ GENERATION_MODEL_SPECS: dict[str, GenerationModelSpec] = {
         research_lead_decision_required=(
             "Propose and approve a progression shape (e.g. linear ramp to a "
             "target magnitude over N days) and its parameters - see "
-            "handoff/research_lead/DECISIONS_NEEDED_NOW.md item 2."
+            "docs/research/research_lead/DECISIONS_NEEDED_NOW.md item 2."
         ),
     ),
 }

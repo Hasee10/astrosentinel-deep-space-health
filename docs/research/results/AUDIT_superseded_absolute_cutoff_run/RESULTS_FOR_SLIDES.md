@@ -57,7 +57,7 @@ fabricate favorable results.
 ## 4. Fixed-vs-adaptive SANS scanning comparison
 
 `backend/evaluation/mars30_schedule_comparison.py` (full output:
-`handoff/submission/mars30_schedule_comparison.json`). SANS only, per
+`docs/research/results/mars30_schedule_comparison.json`). SANS only, per
 directive; venous is excluded from the comparison. Alert = posterior ≥ 15%
 (see §3 for why 40% is unreachable with this rule). Jugular-only days (4, 11,
 18, 25) carry no ONSD reading under either policy. Adaptive = fixed backstop
