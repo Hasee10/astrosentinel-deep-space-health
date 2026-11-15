@@ -93,15 +93,14 @@ def score_crew(input_path: Path, output_dir: Path) -> dict[str, Path]:
             # Computed from the actual results above, not hardcoded, so this can
             # never silently go stale as approvals/algorithms change over time.
             f"SANS probability was computed for {probability_counts['sans']}/{days_scored} "
-            f"scored days (always 0 today: no monitoring-layer SANS formula exists yet, "
-            f"regardless of approvals - see monitoring/engine.py). Venous probability was "
-            f"computed for {probability_counts['venous']}/{days_scored} scored days via the "
-            f"approved Bayesian flow-class model (0 here because generated data carries no "
-            f"jugular scans yet - jugular_scan_values generation remains unimplemented). "
-            f"Every non-null venous probability carries probability_label='Simulation "
-            f"placeholder - unvalidated'. Remaining tiers reflect only rule-based logic "
-            f"(red-flag -> urgent, poor quality -> repeat) or the explicit 'unresolved' "
-            f"insufficient-evidence state."
+            f"scored days via the approved Bayesian ONSD-cutoff model (monitoring/engine.py; "
+            f"0 only if this run's input carries no quality-OK ONSD scans at all). Venous "
+            f"probability was computed for {probability_counts['venous']}/{days_scored} scored "
+            f"days via the approved Bayesian flow-class model (0 only if this run's input "
+            f"carries no quality-OK jugular scans at all). Every non-null probability carries "
+            f"probability_label='Simulation placeholder - unvalidated'. Remaining tiers reflect "
+            f"only rule-based logic (red-flag -> urgent, poor quality -> repeat) or the explicit "
+            f"'unresolved' insufficient-evidence state."
         ),
     }
     summary_path = output_dir / "scoring_summary.json"
