@@ -15,17 +15,29 @@ What this can legitimately compute, and why:
   must never be shown as a validated clinical estimate. Uses ONLY the single latest
   available flow-class observation per assessment - sequential daily likelihood
   ratios are never multiplied together (per the approval's own explicit condition).
-- A SANS probability (final-submission directive, 2026-11-15): now computable, because
-  sans_probability_model and onsd_cutoff_risk_mapping are both approved - see
-  _compute_sans_probability below. Reuses the real Koziarz 2019 ICU/ICP ONSD cutoff
-  and likelihood ratios (onsd_accuracy_koziarz_2019_rev1: cutoff 5.0mm, LR+ 6.93,
-  LR- 0.04) against the latest quality-OK ONSD reading, per onsd_icu_cutoff_reuse_scope's
-  2026-11-15 approval - the LRs are a real cited study, but for ICU/ICP, not SANS; the
-  starting prior is an unsourced simulation placeholder mirroring the venous model's.
-  Every output carries probability_label="Simulation placeholder - unvalidated". sans_
-  prior_mapping's separate 2026-11-04 approval (the GENERATION-layer susceptibility/
-  event/time-prior scheme in simulation/physiological_generation.py, for ground truth
-  only) remains unrelated and is still never read here.
+- A SANS probability (final-submission directive, 2026-11-15, CORRECTED same day):
+  now computable, because sans_probability_model and onsd_cutoff_risk_mapping are
+  both approved - see _compute_sans_probability below. The positive test is a
+  PERSONAL-BASELINE DELTA: the latest quality-OK ONSD reading at least 0.4mm above
+  this astronaut's own causally-estimated baseline (median of the earliest quality-OK
+  readings seen so far) - never an absolute cutoff. An earlier same-day
+  implementation tested an absolute 5.0mm cutoff instead; that was a misreading of
+  the collaborator's specification, produced an unusable ~96-99% false-escalation
+  rate, and is preserved only as an audit record (see
+  handoff/submission/AUDIT_superseded_absolute_cutoff_run/) - onsd_icu_cutoff_reuse_
+  scope, briefly approved for that version, is reverted to unapproved, since the
+  corrected code never reads the absolute cutoff value at all. The LR+/LR- numbers
+  (onsd_accuracy_koziarz_2019_rev1: 6.93 / 0.04) are still reused from Koziarz 2019,
+  a real cited study - but for an absolute-cutoff ICU/ICP test design, not the
+  baseline-delta test applied here; the starting prior is an unsourced simulation
+  placeholder mirroring the venous model's. Every output carries
+  probability_label="Simulation placeholder - unvalidated". This is USER-RELAYED
+  approval for a synthetic submission experiment only, never independent written
+  research-lead sign-off or clinical validation (see sans_probability_model's
+  limitations). sans_prior_mapping's separate 2026-11-04 approval (the
+  GENERATION-layer susceptibility/event/time-prior scheme in
+  simulation/physiological_generation.py, for ground truth only) remains unrelated
+  and is still never read here.
 
 SANS and venous are assessed by two independent nested functions that never share state
 or read each other's scan/signal evidence - there is no code path that could produce a
@@ -192,29 +204,52 @@ def _compute_venous_probability(
     return posterior_probability, flow_class
 
 
+_BASELINE_WINDOW_READINGS = 3  # onsd_cutoff_risk_mapping.baseline_estimation
+
+
+def _personal_onsd_baseline(ok_onsd_readings_so_far: list[float]) -> float | None:
+    """Median of the first min(3, available) quality-OK ONSD readings, in chronological
+    order, among whatever is causally visible so far. Locks once 3 are seen. Returns
+    None if no quality-OK reading has been seen yet - never a hidden/fabricated value."""
+    if not ok_onsd_readings_so_far:
+        return None
+    import statistics
+    return statistics.median(ok_onsd_readings_so_far[:_BASELINE_WINDOW_READINGS])
+
+
 def _compute_sans_probability(
     history: list[AstronautDayObservation], registry: Registry
 ) -> float | None:
     """Prior-odds x LR using ONLY the single latest quality-OK ONSD reading - never a
     running/multiplied posterior across multiple days (mirrors _compute_venous_probability's
-    discipline, for the same correlated-evidence reason). Returns None if the model isn't
-    fully approved or no usable evidence exists."""
+    discipline, for the same correlated-evidence reason). The positive test is a
+    personal-baseline DELTA (see onsd_cutoff_risk_mapping.delta_threshold_mm), never an
+    absolute cutoff - see module docstring. Returns None if the model isn't fully
+    approved, no usable latest evidence exists, or a personal baseline cannot yet be
+    estimated from this astronaut's own causally-visible history."""
     if not (
         registry.assumptions["sans_probability_model"].is_active()
         and registry.assumptions["onsd_cutoff_risk_mapping"].is_active()
     ):
         return None
 
-    latest = next((scan for o in reversed(history) for scan in measurements_of(o)
-                   if scan.type == ScanType.ONSD
-                   and scan.quality is not None
-                   and scan.quality.status == QualityStatus.OK
-                   and scan.onsd_mm is not None), None)
-    if latest is None:
+    ok_readings_in_order = [
+        scan.onsd_mm for o in history for scan in measurements_of(o)
+        if scan.type == ScanType.ONSD
+        and scan.quality is not None
+        and scan.quality.status == QualityStatus.OK
+        and scan.onsd_mm is not None
+    ]
+    if not ok_readings_in_order:
+        return None
+    latest_onsd_mm = ok_readings_in_order[-1]
+    baseline = _personal_onsd_baseline(ok_readings_in_order)
+    if baseline is None:
         return None
 
     config = registry.assumptions["onsd_cutoff_risk_mapping"].value_or_range
-    lr = config["lr_positive"] if latest.onsd_mm >= config["cutoff_mm"] else config["lr_negative"]
+    delta = latest_onsd_mm - baseline
+    lr = config["lr_positive"] if delta >= config["delta_threshold_mm"] else config["lr_negative"]
 
     prior = config["starting_synthetic_prior_pct"] / 100.0
     prior_odds = prior / (1 - prior)
@@ -350,19 +385,18 @@ def _assess_outcome(
         else:
             model_ref, evidence_text = "onsd_cutoff_risk_mapping", (
                 f"SANS probability computed as prior-odds x LR using the latest "
-                f"quality-OK ONSD reading against the 5.0mm cutoff, per the approved "
-                f"onsd_cutoff_risk_mapping values (LR+ 6.93 / LR- 0.04, reused from "
-                f"Koziarz et al. 2019's ICU/ICP study), thresholded per "
+                f"quality-OK ONSD reading's delta from this astronaut's own causally-"
+                f"estimated baseline (positive if >= 0.4mm above baseline), per the "
+                f"approved onsd_cutoff_risk_mapping values (LR+ 6.93 / LR- 0.04, reused "
+                f"from Koziarz et al. 2019's ICU/ICP study), thresholded per "
                 f"decision_tier_thresholds."
             )
             model_note = (
                 "HYPOTHETICAL/SYNTHETIC: computed from a Bayesian model whose LR values "
-                "are a real cited study (Koziarz 2019) for ICU/ICP, reused for SANS by "
-                "explicit 2026-11-15 directive, not because SANS-specific LR evidence "
-                "exists; the starting prior is an unsourced simulation placeholder. "
-                "About 90% of healthy astronauts sit above the 5.0mm absolute cutoff at "
-                "personal baseline, so this rule reads as elevated-probability far more "
-                "often than a personal-baseline-relative rule would. Sequential daily "
+                "are a real cited study (Koziarz 2019) for an absolute-cutoff ICU/ICP "
+                "test, reused here for a personal-baseline-delta SANS test by explicit "
+                "2026-11-15 directive, not because SANS-specific LR evidence exists; the "
+                "starting prior is an unsourced simulation placeholder. Sequential daily "
                 "likelihood ratios are never multiplied together."
             )
         return OutcomeAssessment(

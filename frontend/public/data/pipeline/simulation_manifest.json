@@ -13,7 +13,6 @@
     "jugular_flow_risk_mapping",
     "onsd_baseline_sd_values",
     "onsd_cutoff_risk_mapping",
-    "onsd_icu_cutoff_reuse_scope",
     "onsd_scan_failure_rate",
     "sans_prior_mapping",
     "sans_probability_model",

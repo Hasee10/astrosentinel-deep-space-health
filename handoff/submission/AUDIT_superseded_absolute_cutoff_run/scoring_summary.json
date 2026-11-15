@@ -1,0 +1,19 @@
+{
+  "input": "outputs\\mars30_pipeline\\crew_observations.jsonl",
+  "astronauts_scored": 300,
+  "days_scored": 9000,
+  "errors": [],
+  "structural_warnings": [],
+  "sans_tier_distribution": {
+    "repeat": 8093,
+    "monitor": 907
+  },
+  "venous_tier_distribution": {
+    "unresolved": 900,
+    "monitor": 5615,
+    "repeat": 2485
+  },
+  "sans_probability_computed_count": 8110,
+  "venous_probability_computed_count": 8100,
+  "note": "SANS probability was computed for 8110/9000 scored days via the approved Bayesian ONSD-cutoff model (monitoring/engine.py; 0 only if this run's input carries no quality-OK ONSD scans at all). Venous probability was computed for 8100/9000 scored days via the approved Bayesian flow-class model (0 only if this run's input carries no quality-OK jugular scans at all). Every non-null probability carries probability_label='Simulation placeholder - unvalidated'. Remaining tiers reflect only rule-based logic (red-flag -> urgent, poor quality -> repeat) or the explicit 'unresolved' insufficient-evidence state."
+}

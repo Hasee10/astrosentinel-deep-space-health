@@ -2,70 +2,70 @@
   "trigger_accuracy_used": 0.7,
   "n_event_astronauts": 124,
   "n_nonevent_astronauts": 176,
-  "note": "SANS only, per directive. Alert = posterior >= 15% (decision_tier_thresholds.repeat_min_pct) from the latest quality-OK ONSD reading actually taken under each policy - the single-latest-reading LR+6.93 model from a 5% prior cannot reach the 40% Consult threshold (posterior caps at ~26.7%), the same structural ceiling test_recovery_acceptance.py documents for the venous LR=10 case. Jugular-only days (4,11,18,25) never carry an ONSD reading.",
+  "note": "SANS only, per directive. Positive test = latest quality-OK ONSD reading >= 0.4mm above this astronaut's own causally-estimated personal baseline (median of the first 3 quality-OK readings this policy has actually taken), NOT an absolute cutoff - corrected 2026-11-15 from an earlier absolute-5.0mm-cutoff version (see handoff/submission/AUDIT_superseded_absolute_cutoff_run/). Alert = posterior >= 15% (decision_tier_thresholds.repeat_min_pct) - the single-latest-reading LR+6.93 model from a 5% prior cannot reach the 40% Consult threshold (posterior caps at ~26.7%), the same structural ceiling test_recovery_acceptance.py documents for the venous LR=10 case. Jugular-only days (4,11,18,25) never carry an ONSD reading.",
   "by_interval": {
     "3d": {
       "fixed": {
         "total_scans": 2400,
-        "detected": 10,
-        "missed": 114,
-        "median_delay_days": 3.5,
-        "mean_delay_days": 4.6,
-        "false_escalation_rate": 0.9886
+        "detected": 93,
+        "missed": 31,
+        "median_delay_days": 11.0,
+        "mean_delay_days": 10.516129032258064,
+        "false_escalation_rate": 0.1818
       },
       "adaptive": {
         "total_scans": 2774,
-        "detected": 8,
-        "missed": 116,
-        "median_delay_days": 3.5,
-        "mean_delay_days": 4.125,
-        "false_escalation_rate": 0.9886
+        "detected": 98,
+        "missed": 26,
+        "median_delay_days": 10.0,
+        "mean_delay_days": 9.255102040816327,
+        "false_escalation_rate": 0.1875
       },
       "extra_scans_used_by_adaptive": 374,
-      "total_days_saved_by_adaptive": 86,
-      "days_saved_per_additional_scan": 0.23
+      "total_days_saved_by_adaptive": 361,
+      "days_saved_per_additional_scan": 0.965
     },
     "7d": {
       "fixed": {
         "total_scans": 1500,
-        "detected": 12,
-        "missed": 112,
-        "median_delay_days": 6.0,
-        "mean_delay_days": 6.416666666666667,
-        "false_escalation_rate": 0.9716
+        "detected": 91,
+        "missed": 33,
+        "median_delay_days": 13.0,
+        "mean_delay_days": 13.032967032967033,
+        "false_escalation_rate": 0.0852
       },
       "adaptive": {
         "total_scans": 1938,
-        "detected": 10,
-        "missed": 114,
-        "median_delay_days": 4.5,
-        "mean_delay_days": 5.8,
-        "false_escalation_rate": 0.9716
+        "detected": 101,
+        "missed": 23,
+        "median_delay_days": 11.0,
+        "mean_delay_days": 10.782178217821782,
+        "false_escalation_rate": 0.1023
       },
       "extra_scans_used_by_adaptive": 438,
-      "total_days_saved_by_adaptive": 129,
-      "days_saved_per_additional_scan": 0.295
+      "total_days_saved_by_adaptive": 385,
+      "days_saved_per_additional_scan": 0.879
     },
     "14d": {
       "fixed": {
         "total_scans": 900,
-        "detected": 18,
-        "missed": 106,
-        "median_delay_days": 7.5,
-        "mean_delay_days": 9.055555555555555,
-        "false_escalation_rate": 0.9602
+        "detected": 60,
+        "missed": 64,
+        "median_delay_days": 19.5,
+        "mean_delay_days": 18.233333333333334,
+        "false_escalation_rate": 0.0114
       },
       "adaptive": {
         "total_scans": 1377,
-        "detected": 16,
-        "missed": 108,
-        "median_delay_days": 4.0,
-        "mean_delay_days": 6.375,
-        "false_escalation_rate": 0.9659
+        "detected": 84,
+        "missed": 40,
+        "median_delay_days": 14.0,
+        "mean_delay_days": 14.19047619047619,
+        "false_escalation_rate": 0.0682
       },
       "extra_scans_used_by_adaptive": 477,
-      "total_days_saved_by_adaptive": 380,
-      "days_saved_per_additional_scan": 0.797
+      "total_days_saved_by_adaptive": 450,
+      "days_saved_per_additional_scan": 0.943
     }
   }
 }

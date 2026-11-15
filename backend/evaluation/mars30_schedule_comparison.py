@@ -10,8 +10,12 @@ Reuses, rather than reinvents, two already-approved pieces of this codebase:
     comparison per the directive, and the trigger model was never approved for
     it anyway).
   - monitoring/engine.py's approved SANS Bayesian rule (onsd_cutoff_risk_mapping:
-    cutoff 5.0mm, LR+ 6.93, LR- 0.04) and decision_tier_thresholds' approved
-    Consult cutoff (40%) as the escalation/alert point.
+    personal-baseline delta >= 0.4mm, LR+ 6.93, LR- 0.04) and decision_tier_
+    thresholds' approved Repeat cutoff (15%, see ALERT_MIN_PCT below) as the
+    escalation/alert point. The personal baseline is estimated the same way as
+    monitoring/engine.py::_personal_onsd_baseline: median of the first 3
+    quality-OK ONSD readings this policy has actually taken so far for that
+    astronaut - never a value the policy has not yet observed.
 
 What is new here is only the glue: Mars30's real per-astronaut-day ONSD values
 replace the synthetic generator as the source of evidence, and a jugular-only
@@ -37,7 +41,8 @@ import pandas as pd
 from evaluation.policies import AdaptiveSchedulePolicy, FixedSchedulePolicy
 from evaluation.trigger_model import per_day_firing_probability
 
-CUTOFF_MM = 5.0
+DELTA_THRESHOLD_MM = 0.4  # onsd_cutoff_risk_mapping.delta_threshold_mm - personal-baseline delta, not an absolute cutoff
+BASELINE_WINDOW_READINGS = 3  # onsd_cutoff_risk_mapping.baseline_estimation
 LR_POSITIVE = 6.93
 LR_NEGATIVE = 0.04
 STARTING_PRIOR_PCT = 5  # mirrors registry onsd_cutoff_risk_mapping / jugular_flow_risk_mapping placeholder
@@ -52,8 +57,17 @@ TRIGGER_WINDOW_DAYS = 5  # hrv_trigger_assumed_accuracy.post_onset_window_days
 BASE_FALSE_FIRE_PROBABILITY = 0.05  # hrv_trigger_assumed_accuracy.base_false_fire_probability_per_day
 
 
-def sans_posterior_pct(onsd_mm: float) -> float:
-    lr = LR_POSITIVE if onsd_mm >= CUTOFF_MM else LR_NEGATIVE
+def _personal_baseline(ok_readings_so_far: list[float]) -> float | None:
+    """Mirrors monitoring/engine.py::_personal_onsd_baseline exactly."""
+    if not ok_readings_so_far:
+        return None
+    import statistics
+    return statistics.median(ok_readings_so_far[:BASELINE_WINDOW_READINGS])
+
+
+def sans_posterior_pct(latest_onsd_mm: float, baseline_mm: float) -> float:
+    delta = latest_onsd_mm - baseline_mm
+    lr = LR_POSITIVE if delta >= DELTA_THRESHOLD_MM else LR_NEGATIVE
     prior = STARTING_PRIOR_PCT / 100.0
     prior_odds = prior / (1 - prior)
     posterior_odds = prior_odds * lr
@@ -117,7 +131,7 @@ def _run_policy(
         n_event += int(is_event)
         n_nonevent += int(not is_event)
 
-        last_good_onsd: float | None = None
+        ok_readings_so_far: list[float] = []  # causal: only readings this policy has actually taken
         alert_day: int | None = None
         for day in range(1, MISSION_DAYS + 1):
             if day in JUGULAR_ONLY_DAYS:
@@ -135,11 +149,12 @@ def _run_policy(
             quality = quality_by_astro_day.get(key)
             value = onsd_by_astro_day.get(key)
             if quality == "ok" and value is not None and value == value:  # value==value excludes NaN
-                last_good_onsd = value
+                ok_readings_so_far.append(value)
 
-            if last_good_onsd is None or alert_day is not None:
+            if not ok_readings_so_far or alert_day is not None:
                 continue
-            posterior = sans_posterior_pct(last_good_onsd)
+            baseline = _personal_baseline(ok_readings_so_far)
+            posterior = sans_posterior_pct(ok_readings_so_far[-1], baseline)
             if posterior >= ALERT_MIN_PCT:
                 alert_day = day
 
@@ -222,7 +237,7 @@ def run_comparison(
         "trigger_accuracy_used": trigger_accuracy,
         "n_event_astronauts": results["fixed_7d"].n_event_astronauts,
         "n_nonevent_astronauts": results["fixed_7d"].n_nonevent_astronauts,
-        "note": "SANS only, per directive. Alert = posterior >= 15% (decision_tier_thresholds.repeat_min_pct) from the latest quality-OK ONSD reading actually taken under each policy - the single-latest-reading LR+6.93 model from a 5% prior cannot reach the 40% Consult threshold (posterior caps at ~26.7%), the same structural ceiling test_recovery_acceptance.py documents for the venous LR=10 case. Jugular-only days (4,11,18,25) never carry an ONSD reading.",
+        "note": "SANS only, per directive. Positive test = latest quality-OK ONSD reading >= 0.4mm above this astronaut's own causally-estimated personal baseline (median of the first 3 quality-OK readings this policy has actually taken), NOT an absolute cutoff - corrected 2026-11-15 from an earlier absolute-5.0mm-cutoff version (see handoff/submission/AUDIT_superseded_absolute_cutoff_run/). Alert = posterior >= 15% (decision_tier_thresholds.repeat_min_pct) - the single-latest-reading LR+6.93 model from a 5% prior cannot reach the 40% Consult threshold (posterior caps at ~26.7%), the same structural ceiling test_recovery_acceptance.py documents for the venous LR=10 case. Jugular-only days (4,11,18,25) never carry an ONSD reading.",
         "by_interval": summary,
     }
 

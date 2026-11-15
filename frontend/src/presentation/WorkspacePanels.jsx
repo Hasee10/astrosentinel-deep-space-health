@@ -5,6 +5,7 @@ import { OutcomeTile } from "./OutcomeTile.jsx";
 import { DetailDialog, Pager } from "./WorkspaceUI.jsx";
 import { policyLabel, recordPage } from "./missionModel.js";
 import EngineeringComparison from "./EngineeringComparison.jsx";
+import ResearchResults from "./ResearchResults.jsx";
 
 export function OutcomeGroup({ record, rows = [], day, consultations = [], onTimeline, onSchedule, onConsultation }) {
   return <div className="pv-outcome-group"><div className="pv-tiles">
@@ -208,16 +209,7 @@ export function ResearchPanel({ manifest, evaluation, tab }) {
       .replaceAll("_", " ")
       .replace(/\b(sans|onsd|hrv|ptt)\b/gi, (word) => word.toUpperCase());
   if (tab === "engineering") return <EngineeringComparison />;
-  if (tab === "results") return <section className="pv-panel pv-consultations">
-    <div className="pv-panel-head"><h2>Fixed versus adaptive results</h2></div>
-    <h3>No validated experiment results available</h3>
-    <p>Independent written confirmation is still required for the user-relayed SANS progression and evidence model, the 0.1 percentage-point daily prior supersession, venous generation, shared-session retries, and adaptive deferral precedence.</p>
-    <p>Engineering acceptance cases are available separately. Their outputs verify program behavior and cannot establish scan savings or medical performance.</p>
-    <dl><div><dt>Loaded cohort</dt><dd>{manifest?.crew_size ?? "Unavailable"} profiles · {manifest?.mission_duration_days ?? "Unavailable"} days · seed {manifest?.random_seed ?? "Unavailable"}</dd></div>
-    <div><dt>Outcome metrics</dt><dd>Scan burden, detection delay, missed events, and false escalations remain withheld until experiment readiness passes.</dd></div></dl>
-    <p>Open Blockers for the exact current readiness failures. The versioned specification and approval questions are recorded in the research-lead handoff.</p>
-    <p><a href="#engineering-dashboard">Inspect labeled engineering acceptance cases</a></p>
-  </section>;
+  if (tab === "results") return <ResearchResults manifest={manifest} />;
   if (tab === "summary")
     return (
       <section className="pv-panel pv-research-summary">
@@ -238,7 +230,7 @@ export function ResearchPanel({ manifest, evaluation, tab }) {
             <p>
               {blockers.length
                 ? "Monitoring views are available. Experimental results require additional models and decisions."
-                : "This workspace displays a readiness report; it does not display comparison results."}
+                : "No registry-approval blocker is outstanding for the implemented capabilities - open Results for the actual computed comparison, its assumptions, and what remains genuinely unvalidated or out of scope."}
             </p>
           </div>
         </div>

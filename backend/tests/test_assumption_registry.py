@@ -69,11 +69,11 @@ RAHAT_APPROVED_ASSUMPTION_IDS = {
 COLLABORATOR_APPROVED_ASSUMPTION_IDS = {
     "sans_probability_model",
     "onsd_cutoff_risk_mapping",
-    "onsd_icu_cutoff_reuse_scope",
 }
 APPROVED_ASSUMPTION_IDS = RAHAT_APPROVED_ASSUMPTION_IDS | COLLABORATOR_APPROVED_ASSUMPTION_IDS
 UNAPPROVED_ASSUMPTION_IDS = {
     "ptt_trigger_assumed_usefulness",
+    "onsd_icu_cutoff_reuse_scope",  # briefly approved, reverted same-day - see assumptions.json
     "onsd_interobserver_noise_magnitude",
     "sans_cnn_reuse_scope",
     "evidence_atlas_lr_reliance",

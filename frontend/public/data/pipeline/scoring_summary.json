@@ -5,8 +5,8 @@
   "errors": [],
   "structural_warnings": [],
   "sans_tier_distribution": {
-    "repeat": 8093,
-    "monitor": 907
+    "monitor": 7001,
+    "repeat": 1999
   },
   "venous_tier_distribution": {
     "unresolved": 900,
